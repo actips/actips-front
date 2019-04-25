@@ -1,5 +1,29 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <h1>关于 ACTIPS.ORG</h1>
+    <br/>
+    <p>这是一个计(xu)划(mou)很(yi)久(jiu)的项目，因为各种惰性一直没有付诸实践，
+      在2019年郑州大学ACM团队吴老师的机缘巧合下，终于动工，希望能给各位热爱ACM运动项目的同胞们略尽绵力。</p>
+    <br/>
+    <p>Author: <a href="https://github.com/fish-ball/">呆滞的慢板@ZZU</a></p>
+    <p>Email: <a href="mailto:57082212@qq.com">57082212@qq.com</a></p>
+    <p>Github Group: <a href="https://github.com/actips/">https://github.com/actips/</a></p>
+    <p>Welcome to contribute!</p>
+    <br/>
+    <p>Powered By: Easecloud Computer Technology Co. Ltd.</p>
   </div>
 </template>
+
+<style lang="less" scoped>
+  h1 {
+    font-size: 24px;
+    line-height: 48px;
+  }
+  a {
+    text-decoration: underline;
+  }
+  p {
+    font-size: 14px;
+    line-height: 24px;
+  }
+</style>
