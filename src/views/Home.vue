@@ -1,18 +1,11 @@
 <template>
-  <div>
-    {{hello}}
-    {{ctx.name}}
-  </div>
+  <div></div>
 </template>
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator';
 
-  @Component({
-    data() {
-      return {hello: 'you'};
-    },
-  })
+  @Component
   export default class Home extends Vue {
   }
 </script>

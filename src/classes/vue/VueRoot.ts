@@ -1,7 +1,7 @@
-import Vue from 'vue';
-import GlobalContext from '@/classes/GlobalContext';
+import GlobalContext from '@/classes/utils/GlobalContext';
+import VueBase from '@/classes/vue/VueBase';
 
-export default class VueRoot extends Vue {
+export default class VueRoot extends VueBase {
   public globalContext = new GlobalContext();
 }
 

@@ -5,7 +5,6 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import VueRoot from '@/classes/vue/VueRoot';
-import '@/classes/vue/VueMixin';
 
 Vue.config.productionTip = false;
 
