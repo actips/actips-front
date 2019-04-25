@@ -5,7 +5,6 @@ export default class Member {
   public avatarUrl?: string;
 
   constructor(data: { [key: string]: any }) {
-    console.log(data);
     Object.assign(this, data);
   }
 }

@@ -2,12 +2,12 @@ import Vue from 'vue';
 import GlobalContext from '@/classes/utils/GlobalContext';
 import ApiResource from '@/classes/utils/ApiResource';
 import Member from '@/classes/models/Member';
+import VueRoot from '@/classes/vue/VueRoot';
 
 export default class VueBase extends Vue {
-  public globalContext = new GlobalContext();
 
   get ctx(): GlobalContext {
-    return ((this as any).$root as any).globalContext || (window as any).app.globalContext;
+    return (this.$root as VueRoot).globalContext;
   }
 
   // 从性能角度来看，可以考虑将多次的构造缓存下来，支持重复使用
@@ -31,6 +31,16 @@ export default class VueBase extends Vue {
   }
 
   /**
+   * 注销当前登录
+   * @returns {Promise<void>}
+   */
+  public async logout() {
+    const vm = this;
+    await vm.api('member').post({action: 'logout'}, {});
+    vm.ctx.me = null;
+  }
+
+  /**
    * 获取当前登录的用户
    * @param {boolean} reload 是否强制更新
    * @returns {Promise<Member>}
@@ -38,11 +48,12 @@ export default class VueBase extends Vue {
   public async getCurrentUser(reload = false) {
     const vm = this;
     if (reload || !vm.ctx.me) {
-      vm.ctx.me = new Member(
-        (await vm.api('member').get({action: 'current'})).data,
-      );
+      const resp = await vm.api('member').get({action: 'current'})
+        .then((x) => x, () => null);
+      vm.ctx.me = resp ? new Member(resp.data) : null;
     }
     return vm.ctx.me;
   }
+
 }
 

@@ -5,4 +5,8 @@ import config from '@/config';
 export default class GlobalContext {
   public me: Member | null = null;
   public config: Config = new Config(config);
+
+  constructor() {
+    console.log('fuck');
+  }
 }

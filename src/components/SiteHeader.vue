@@ -1,6 +1,18 @@
 <template>
   <div class="site-header">
     <div class="wrapper">
+      <div class="status">
+        <div v-if="ctx.me" class="block-user">
+          <img class="avatar" :src="ctx.me.avatarUrl"/>
+          <div class="name">
+            <div>{{ctx.me.nickname}}</div>
+            <div><a @click="doLogout()" href="javascript:">注销</a></div>
+          </div>
+        </div>
+        <div v-else class="block-nologin">
+          <a @click="loginWechat()" href="javascript:">登录</a>
+        </div>
+      </div>
       <div class="logo">
         <pre>
  ______     ______     ______   __     ______   ______
@@ -10,11 +22,6 @@
   \/_/\/_/   \/_____/     \/_/   \/_/   \/_/     \/_____/
         </pre>
       </div>
-      <div v-if="ctx.me">
-        <img class="avatar" :src="ctx.me.avatarUrl"/>
-        {{ctx.me.nickname}}
-      </div>
-      <div v-else><a @click="loginWechat" href="javascript:">登录</a></div>
     </div>
   </div>
 </template>
@@ -25,6 +32,7 @@
 
   @Component
   export default class SiteHeader extends VueBase {
+
     public loginWechat() {
       const vm = this;
       const form = document.createElement('form');
@@ -38,6 +46,13 @@
       document.body.appendChild(form);
       form.submit();
     }
+
+    public async doLogout() {
+      const vm = this;
+      await vm.logout();
+      vm.$forceUpdate();
+    }
+
   }
 </script>
 
@@ -45,19 +60,46 @@
   @import "../../src/libs/less-template/template-defines";
 
   .site-header {
+    background: white;
     .wrapper {
-      width: 1280px;
+      width: 1160px;
+      padding: 0 20px;
       margin: 0 auto;
+      height: 80px;
+      overflow: hidden;
+      text-align: center;
     }
     .logo {
+      float: left;
+      text-align: left;
       font-family: monospace;
       font-size: 12px;
       font-weight: bolder;
-      -webkit-transform: scale(0.8);
-      -moz-transform: scale(0.8);
-      -ms-transform: scale(0.8);
-      -o-transform: scale(0.8);
-      transform: scale(0.8);
+      line-height: 12px;
+      margin: 10px 0;
+      display: inline-block;
+    }
+    .status {
+      float: right;
+      line-height: 20px;
+      font-size: 14px;
+      text-align: right;
+      .block-user {
+        .clearfix();
+        .avatar {
+          .circle();
+          width: 50px;
+          height: 50px;
+          margin: 15px;
+          float: left;
+        }
+        .name {
+          margin: 20px 0 20px 80px;
+        }
+      }
+      .block-nologin {
+        margin: 30px 0;
+      }
     }
   }
 </style>
