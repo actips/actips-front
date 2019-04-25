@@ -1,25 +1,27 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
 
 Vue.use(Router);
+
+import Home from '@/views/Home.vue';
+import About from '@/views/About.vue';
 
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: Home,
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
-    },
-  ],
+  routes: [{
+    path: '/',
+    redirect: '/home/',
+  }, {
+    path: '/home/',
+    name: 'home',
+    component: Home,
+    // 这种写法会导致 mounted 的时候获取不到正确的 $route 参数
+    // component: () => import('@/views/Home.vue'),
+  }, {
+    path: '/about/',
+    name: 'about',
+    component: About,
+    // component: () => import('@/views/About.vue'),
+  }],
 });

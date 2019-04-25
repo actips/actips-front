@@ -1,17 +1,26 @@
 <template>
   <div id="app" v-if="ready">
     <site-header ref="header"/>
-    <router-view/>
+    <div class="site-body">
+      <div class="wrapper">
+        <site-sidebar></site-sidebar>
+        <div class="site-content">
+          <router-view/>
+        </div>
+      </div>
+    </div>
+    <div class="site-footer"></div>
   </div>
 </template>
 
 <script lang="ts">
   import Vue from 'vue';
   import {Component} from 'vue-property-decorator';
+  import VueBase from '@/classes/vue/VueBase';
   import SiteHeader from '@/components/SiteHeader.vue';
-  import VueBase from './classes/vue/VueBase';
+  import SiteSidebar from '@/components/SiteSidebar.vue';
 
-  @Component({components: {SiteHeader}})
+  @Component({components: {SiteSidebar, SiteHeader}})
   export default class App extends VueBase {
     public ready = false;
 
@@ -36,3 +45,19 @@
     }
   }
 </script>
+
+<style lang="less">
+  @import './libs/less-template/template-defines';
+
+  .site-body {
+    .wrapper {
+      width: 1160px;
+      border-top: 1px solid #F5F5F5;
+      padding: 20px;
+      margin: 20px auto;
+      position: relative;
+      .clearfix();
+    }
+  }
+</style>
+

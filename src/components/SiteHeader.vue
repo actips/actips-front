@@ -22,6 +22,16 @@
   \/_/\/_/   \/_____/     \/_/   \/_/   \/_/     \/_____/
         </pre>
       </div>
+      <div class="nav">
+        <ul class="menu">
+          <li>
+            <router-link :to="{name:'home'}">Home</router-link>
+          </li>
+          <li>
+            <router-link :to="{name:'about'}">About</router-link>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -78,6 +88,24 @@
       line-height: 12px;
       margin: 10px 0;
       display: inline-block;
+    }
+    .nav {
+      font-weight: bold;
+      text-align: left;
+      font-size: 14px;
+      padding-left: 20px;
+      padding-top: 40px;
+      float: left;
+      line-height: 20px;
+      ul.menu {
+        li {
+          display: inline-block;
+          margin: 0 20px;
+          .router-link-active {
+            color: blue;
+          }
+        }
+      }
     }
     .status {
       float: right;
