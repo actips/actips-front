@@ -3,6 +3,7 @@
     <header class="page-header">
       <h2 class="title">发布题解</h2>
       <div class="actions">
+        <i-button type="default" @click="$router.back()">返回</i-button>
         <i-button type="primary" @click="submit()">提交</i-button>
       </div>
     </header>
@@ -306,6 +307,9 @@
     }
     .actions {
       float: right;
+      button {
+        margin-left: 4px;
+      }
     }
   }
 

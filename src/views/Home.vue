@@ -21,9 +21,43 @@
     <div class="page-body">
       <ul class="post-list">
         <li v-for="item in items" class="post-item">
-          <div class="post-title">{{item.title}}</div>
+          <div class="post-title">
+            <i-button v-for="problem in item.problems_item" :key="problem.id"
+                      size="small" @click="viewProblem(problem)">
+              {{problem.site_code}}{{problem.num}}
+            </i-button>
+            {{item.title}}
+          </div>
           <div class="post-excerpt">
             <pre>{{item.excerpt}}</pre>
+          </div>
+          <div class="post-content">
+            <div class="content" v-html="item.content"></div>
+          </div>
+          <div class="post-footer">
+            <div class="post-actions">
+              <!-- TODO: post_view 未实现 -->
+              <i-button size="small" type="info" ghost
+                        @click="$router.push({name:'post_view',params:{id:item.id}})">查看
+              </i-button>
+              <i-button v-if="me&&me.user===item.author"
+                        size="small" type="warning" ghost
+                        @click="$router.push({name:'post_edit',params:{id:item.id}})">修改
+              </i-button>
+              <poptip word-wrap width="120" title="确认删除？" confirm
+                      @on-ok="deletePost(item)">
+                <i-button v-if="me&&me.user===item.author"
+                          size="small" type="error" ghost>删除
+                </i-button>
+              </poptip>
+            </div>
+            <div class="post-status">
+              <div class="post-date">{{item.date_created}}</div>
+              <div class="post-author">
+                <img class="avatar" :src="item.author_avatar_url"/>
+                <span class="nickname">{{item.author_nickname}}</span>
+              </div>
+            </div>
           </div>
         </li>
       </ul>
@@ -38,12 +72,15 @@
   import {Component, Vue} from 'vue-property-decorator';
   import ProblemPost from '../classes/models/ProblemPost';
   import VueBase from '../classes/vue/VueBase';
+  import OnlineJudgeProblem from '../classes/models/OnlineJudgeProblem';
+  import Member from '../classes/models/Member';
 
   @Component
   export default class Home extends VueBase {
     public items: ProblemPost[] = [];
     public page = 1;
     public hasMore = true;
+    public me: Member | null = null;
 
     public async loadItems() {
       const vm = this;
@@ -55,9 +92,20 @@
       }
     }
 
+    public async viewProblem(problem: OnlineJudgeProblem) {
+      window.open(problem.online_judge_url, 'problem_' + problem.id);
+    }
+
+    public async deletePost(item: ProblemPost) {
+      const vm = this;
+      await vm.api('problem_post').delete({id: item.id});
+      vm.items.splice(vm.items.indexOf(item), 1);
+    }
+
     private async mounted() {
       const vm = this;
       await vm.loadItems();
+      vm.me = await vm.getCurrentUser();
     }
   }
 </script>
@@ -80,17 +128,48 @@
 
   .page-body {
     ul.post-list {
+      font-size: 14px;
       li.post-item {
         .clearfix();
         padding: 20px;
         border-bottom: 1px solid #F5F5F5;
         .post-title {
-          font-size: 15px;
+          font-size: 14px;
+          line-height: 26px;
+          margin-bottom: 10px;
+          button {
+            margin-right: 4px;
+          }
         }
         .post-excerpt {
-          font-size: 14px;
+          pre {
+            font-family: inherit;
+          }
         }
         .post-footer {
+          margin-top: 20px;
+          .clearfix();
+          .post-actions {
+            float: left;
+            button {
+              margin-right: 4px;
+            }
+          }
+          .post-status {
+            float: right;
+            width: 180px;
+            .post-author {
+              line-height: 24px;
+              img.avatar {
+                width: 24px;
+                height: 24px;
+                float: left;
+                margin-right: 10px;
+              }
+              .nickname {
+              }
+            }
+          }
         }
       }
     }
