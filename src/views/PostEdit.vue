@@ -12,10 +12,6 @@
         <form-item label="标题" :label-width="180">
           <i-input v-model="item.title"></i-input>
         </form-item>
-        <form-item label="摘要" :label-width="180" required>
-          <i-input type="textarea" v-model="item.excerpt"
-                   :rows="2"></i-input>
-        </form-item>
         <form-item label="OJ题目" :label-width="180" required>
           <tag v-for="(problem,i) in item.problems_item"
                :key="problem.id" :name="problem.site_code+problem.num" closable
@@ -35,8 +31,10 @@
           </i-button>
         </form-item>
         <form-item label="正文" :label-width="180">
-          <i-input type="textarea" v-model="item.content"
-                   :rows="20"></i-input>
+          <!--<i-input type="textarea" v-model="item.content"-->
+          <!--:rows="20"></i-input>-->
+          <quill-editor v-model="item.content"
+                        :options="editorOptions"></quill-editor>
         </form-item>
       </i-form>
     </div><!-- .page-content -->
@@ -116,6 +114,13 @@
   import OnlineJudgeSite from '../classes/models/OnlineJudgeSite';
   import OnlineJudgeProblem from '../classes/models/OnlineJudgeProblem';
 
+  import Quill from 'quill';
+  import container from '@/libs/quill-image-extend-module/container';
+  import QuillWatch from '@/libs/quill-image-extend-module/QuillWatch';
+  import ImageExtend from '@/libs/quill-image-extend-module/ImageExtend';
+
+  Quill.register('modules/ImageExtend', ImageExtend);
+
   @Component({})
   export default class Home extends VueBase {
     public item: ProblemPost | null = null;
@@ -136,6 +141,54 @@
     // 提交
     public submitWaiting = false;
 
+    public editorOptions = {
+      modules: {
+        // toolbar: [
+        //   'bold', 'italic', 'underline', 'strike',
+        //   'link', 'image', 'video',
+        //   { align: [] }, { color: [] }, { background: [] }
+        //   // image() {
+        //   //   QuillWatch.emit(this.quill.id)
+        //   // },
+        // ],
+        toolbar: {
+          container,
+          handlers: {
+            image() {
+              QuillWatch.emit((this as any).quill.id);
+            },
+          },
+        },
+        ImageExtend: {
+          loading: true,
+          name: 'img',
+          action: this.ctx.config.apiRoot + '/image/',
+          change(xhr: any, formData: any) {
+            // console.log('change', arguments);
+            const file = formData.get('img');
+            // console.log(file);
+            formData.delete('img');
+            formData.append('image', file);
+          },
+          // start () {
+          //   console.log('start', arguments)
+          // },
+          // end () {
+          //   console.log('end', arguments)
+          // },
+          // error () {
+          //   console.log('error', arguments)
+          // },
+          // success () {
+          //   console.log('success', arguments)
+          // },
+          response(resp: any) {
+            return resp.url;
+          },
+        },
+      },
+    };
+
     public get listCategoriesTransferData() {
       const vm = this;
       return vm.listCategories.map((item) => ({
@@ -148,15 +201,29 @@
 
     public async submit() {
       const vm = this;
-      if (vm.submitWaiting) {
-        vm.$Message.warning('正在提交，请勿频繁点击...');
-        return;
+      if (vm.item) {
+        if (vm.submitWaiting) {
+          vm.$Message.warning('正在提交，请勿频繁点击...');
+          return;
+        }
+        // 前置校验
+        if (vm.item.content.replace(/\s/g, '').length < 30) {
+          vm.$Message.warning('写个题解怎么着总得有个30字吧～');
+          return;
+        }
+        // 执行提交
+        vm.submitWaiting = true;
+        if (vm.item.id) {
+          await vm.api('problem_post').patch({id: vm.item.id}, vm.item).then(() => {
+            vm.$router.push({name: 'home'});
+          }, () => 0);
+        } else {
+          await vm.api('problem_post').post(vm.item).then(() => {
+            vm.$router.push({name: 'home'});
+          }, () => 0);
+        }
+        vm.submitWaiting = false;
       }
-      vm.submitWaiting = true;
-      await vm.api('problem_post').post(vm.item).then(() => {
-        vm.$router.push({name: 'home'});
-      }, () => 0);
-      vm.submitWaiting = false;
     }
 
     public async addProblem() {

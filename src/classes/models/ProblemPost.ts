@@ -7,7 +7,6 @@ export default class ProblemPost {
   public date_created?: string;
   public date_updated?: string;
   public title: string = '';
-  public excerpt: string = '';
   public content: string = '';
   public problems: number[] = [];
   public problems_item: OnlineJudgeProblem[] = [];
