@@ -34,7 +34,7 @@
           </i-button>
         </form-item>
         <form-item label="正文" :label-width="180">
-          <i-input type="textarea" v-model="item.excerpt"
+          <i-input type="textarea" v-model="item.content"
                    :rows="20"></i-input>
         </form-item>
       </i-form>
@@ -47,13 +47,14 @@
         v-model="showModalCategories"
         class="modal-categories"
         title="分类标签"
+        :width="595"
         :mask-closable="false"
-        @on-ok="onOkModalCategories()"
-        @on-cancel="onCancelModalCategories()">
+        :footer-hide="true">
       <transfer
-          :titles="['可选分类', '已选(≤5个)']"
+          :titles="['题目分类', '已选(≤5个)']"
           :data="listCategoriesTransferData"
           filterable
+          :list-style="{width: '250px', height: '320px'}"
           :target-keys="item.categories"
           @on-change="listCategoriesOnChange">
       </transfer>
@@ -131,6 +132,9 @@
     public listCategories: ProblemCategory[] = [];
     public mapCategories: { [key: number]: ProblemCategory } = {};
 
+    // 提交
+    public submitWaiting = false;
+
     public get listCategoriesTransferData() {
       const vm = this;
       return vm.listCategories.map((item) => ({
@@ -142,7 +146,16 @@
     }
 
     public async submit() {
-      return;
+      const vm = this;
+      if (vm.submitWaiting) {
+        vm.$Message.warning('正在提交，请勿频繁点击...');
+        return;
+      }
+      vm.submitWaiting = true;
+      await vm.api('problem_post').post(vm.item).then(() => {
+        vm.$router.push({name: 'home'});
+      }, () => 0);
+      vm.submitWaiting = false;
     }
 
     public async addProblem() {
@@ -204,16 +217,22 @@
 
     public async confirmProblemAdd() {
       const vm = this;
-      if (vm.item.problems.indexOf(vm.modalProblemsProblem.id) > -1) {
-        vm.$Message.info('你已经添加过这道题目');
+      if (!vm.modalProblemsProblem) {
+        vm.$Message.info('还没有匹配到题目');
         return;
       }
-      if (vm.item.problems.length > 3) {
-        vm.$Message.error('最多不能绑定超过三道题目');
+      if (vm.item && vm.modalProblemsProblem.id) {
+        if (vm.item.problems.indexOf(vm.modalProblemsProblem.id) > -1) {
+          vm.$Message.info('你已经添加过这道题目');
+          return;
+        }
+        if (vm.item.problems.length > 3) {
+          vm.$Message.error('最多不能绑定超过三道题目');
+        }
+        vm.item.problems.push(vm.modalProblemsProblem.id);
+        vm.item.problems_item.push(vm.modalProblemsProblem);
+        vm.showModalProblems = false;
       }
-      vm.item.problems.push(vm.modalProblemsProblem.id);
-      vm.item.problems_item.push(vm.modalProblemsProblem);
-      vm.showModalProblems = false;
     }
 
     public async addCategory() {
@@ -255,14 +274,6 @@
         vm.item.categories.splice(index, 1);
         vm.item.categories_item.splice(index, 1);
       }
-    }
-
-    public async onOkModalCategories() {
-      return;
-    }
-
-    public async onCancelModalCategories() {
-      return;
     }
 
     private async mounted() {

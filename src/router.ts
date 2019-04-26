@@ -7,6 +7,8 @@ import Home from '@/views/Home.vue';
 import About from '@/views/About.vue';
 import PostEdit from '@/views/PostEdit.vue';
 import PostList from '@/views/PostList.vue';
+import Submit from '@/views/Submit.vue';
+import Challenge from '@/views/Challenge.vue';
 
 export default new Router({
   mode: 'history',
@@ -17,6 +19,8 @@ export default new Router({
     // component: () => import('@/views/Home.vue'),
     {path: '/home/', name: 'home', component: Home},
     {path: '/about/', name: 'about', component: About},
+    {path: '/submit/', name: 'submit', component: Submit},
+    {path: '/challenge/', name: 'challenge', component: Challenge},
     {path: '/post/:id/', name: 'post_edit', component: PostEdit},
     {path: '/post/', name: 'post_List', component: PostList},
   ],

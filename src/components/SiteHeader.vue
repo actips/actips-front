@@ -31,6 +31,12 @@
             <a href="javascript:alert('功能计划：做不出来的题目找帮手？在这里发布吧！')">求助</a>
           </li>
           <li>
+            <router-link :to="{name:'submit'}">交题</router-link>
+          </li>
+          <li>
+            <router-link :to="{name:'challenge'}">挑战</router-link>
+          </li>
+          <li>
             <router-link :to="{name:'about'}">关于</router-link>
           </li>
         </ul>

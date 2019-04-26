@@ -1,11 +1,5 @@
 <template>
   <div class="site-sidebar">
-    <div class="sidebar-block">
-      <!--<a class="btn-create">发布题解</a>-->
-      <i-button @click="$router.push({name:'post_edit', params:{id:0}})"
-                type="primary">发布题解
-      </i-button>
-    </div>
     <div class="sidebar-block block-categories">
       <h3 class="title">题目分类</h3>
       <ul class="item-list">
@@ -60,18 +54,16 @@
     border-right: 1px solid #eee;
     margin-right: 20px;
     .sidebar-block {
-      margin: 10px 0 30px 0;
+      margin: 0 0 30px 0;
       .title {
-        padding-left: 20px;
         font-size: 15px;
         font-weight: bold;
-        line-height: 44px;
+        line-height: 32px;
+        padding: 10px 10px 10px 20px;
         border-bottom: 1px solid #F5F5F5;
-        margin-right: 10px;
-        margin-bottom: 10px;
       }
       ul.item-list {
-        padding: 0 20px 0 30px;
+        padding: 10px 20px 0 30px;
         line-height: 24px;
         font-size: 14px;
       }

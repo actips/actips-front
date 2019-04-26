@@ -19,11 +19,15 @@
     font-size: 24px;
     line-height: 48px;
   }
+
   a {
     text-decoration: underline;
   }
+
   p {
+    text-indent: 2em;
     font-size: 14px;
     line-height: 24px;
+    margin: 8px 0;
   }
 </style>
