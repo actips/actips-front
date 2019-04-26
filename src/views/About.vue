@@ -2,8 +2,8 @@
   <div class="about">
     <h1>关于 ACTIPS.ORG</h1>
     <br/>
-    <p>这是一个计(xu)划(mou)很(yi)久(jiu)的项目，因为各种惰性一直没有付诸实践，
-      在2019年郑州大学ACM团队吴老师的机缘巧合下，终于动工，希望能给各位热爱ACM运动项目的同胞们略尽绵力。</p>
+    <p>这是一个蓄(yi)谋(tuo)已(zai)久(tuo)的项目，因为各种惰性一直没有付诸实践。</p>
+    <p>机缘巧合，在2019年郑州大学ACM团队吴云鹏老师在校队退役群中的一次号召下，终于动工，希望能给各位热爱ACM运动项目的同胞们略尽绵力。</p>
     <br/>
     <p>Author: <a href="https://github.com/fish-ball/">呆滞的慢板@ZZU</a></p>
     <p>Email: <a href="mailto:57082212@qq.com">57082212@qq.com</a></p>

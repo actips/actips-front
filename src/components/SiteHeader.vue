@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div class="status">
         <div v-if="ctx.me" class="block-user">
-          <img class="avatar" :src="ctx.me.avatarUrl"/>
+          <img class="avatar" :src="ctx.me.avatar_url"/>
           <div class="name">
             <div>{{ctx.me.nickname}}</div>
             <div><a @click="doLogout()" href="javascript:">注销</a></div>
@@ -25,10 +25,13 @@
       <div class="nav">
         <ul class="menu">
           <li>
-            <router-link :to="{name:'home'}">Home</router-link>
+            <router-link :to="{name:'home'}">首页</router-link>
           </li>
           <li>
-            <router-link :to="{name:'about'}">About</router-link>
+            <a href="javascript:alert('功能计划：做不出来的题目找帮手？在这里发布吧！')">求助</a>
+          </li>
+          <li>
+            <router-link :to="{name:'about'}">关于</router-link>
           </li>
         </ul>
       </div>
@@ -70,7 +73,8 @@
   @import "../../src/libs/less-template/template-defines";
 
   .site-header {
-    background: white;
+    background: #F5F5F5;
+    padding-bottom: 15px;
     .wrapper {
       width: 1160px;
       padding: 0 20px;

@@ -12,6 +12,7 @@
     "@types/url-template": "^2.0.28",
     "axios": "^0.18.0",
     "core-js": "^2.6.5",
+    "iview": "^3.4.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "reset-css": "^4.0.1",

@@ -1,28 +1,5 @@
 <template>
-  <div class="site-sidebar">
-    <div class="sidebar-block">
-      <!--<a class="btn-create">发布题解</a>-->
-      <i-button @click="$router.push({name:'post_edit', params:{id:0}})"
-                type="primary">发布题解
-      </i-button>
-    </div>
-    <div class="sidebar-block block-categories">
-      <h3 class="title">题目分类</h3>
-      <ul class="item-list">
-        <li v-for="category in categories">
-          {{category.name}}
-        </li>
-      </ul>
-    </div>
-    <div class="sidebar-block block-oj-sites">
-      <h3 class="title">OnlineJudge</h3>
-      <ul class="item-list">
-        <li v-for="ojSite in onlineJudgeSites">
-          <a :href="ojSite.homepage" target="_blank">{{ojSite.name}}</a>
-        </li>
-      </ul>
-    </div>
-  </div>
+  <ul></ul>
 </template>
 
 <script lang="ts">

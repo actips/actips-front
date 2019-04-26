@@ -5,7 +5,9 @@
       <div class="wrapper">
         <site-sidebar></site-sidebar>
         <div class="site-content">
-          <router-view/>
+          <div class="block-wrapper">
+            <router-view/>
+          </div>
         </div>
       </div>
     </div>
@@ -46,17 +48,25 @@
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
   @import './libs/less-template/template-defines';
 
   .site-body {
     .wrapper {
       width: 1160px;
-      border-top: 1px solid #F5F5F5;
-      padding: 20px;
+      /*border-top: 1px solid #F5F5F5;*/
+      padding: 0 20px;
       margin: 20px auto;
       position: relative;
       .clearfix();
+      .site-content {
+        margin-left: 320px;
+        .block-wrapper {
+          display: inline-block;
+          width: 100%;
+          .clearfix();
+        }
+      }
     }
   }
 </style>
