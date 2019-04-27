@@ -32,51 +32,8 @@
     <div class="page-body">
       <ul class="post-list">
         <li v-for="item in items" class="post-item">
-          <div class="post-header">
-            <div class="post-title">
-              <i-button v-for="problem in item.problems_item" :key="problem.id"
-                        size="small" @click="viewProblem(problem)">
-                {{problem.site_code}}{{problem.num}}
-              </i-button>
-              <router-link :to="{name:'post_view',params:{id:item.id}}">
-                {{item.problems_item[0].title}}{{item.title&&' - '+item.title}}
-              </router-link>
-              <!-- TODO: post_view 未实现 -->
-            </div>
-            <div class="post-actions">
-              <i-button v-if="me&&me.user===item.author"
-                        size="small" type="warning" ghost
-                        @click="$router.push({name:'post_edit',params:{id:item.id}})">修改
-              </i-button>
-              <poptip word-wrap width="120" title="确认删除？" confirm
-                      @on-ok="deletePost(item)">
-                <i-button v-if="me&&me.user===item.author"
-                          size="small" type="error" ghost>删除
-                </i-button>
-              </poptip>
-            </div>
-          </div>
-          <div class="post-content">
-            <div class="content" v-html="item.content"></div>
-            <div class="show-less">
-              <a class="btn-collapse" @click="collapse">折<br/>叠</a>
-            </div>
-            <div class="show-more">
-              <a class="btn-expand" href="javascript:" @click="expand">展开全部</a>
-            </div>
-          </div>
-          <div class="post-footer">
-            <div class="post-categories">
-              <tag v-for="cat in item.categories_item" :key="cat.id">{{cat.name}}</tag>
-            </div>
-            <div class="post-status">
-              <div class="post-author">
-                <img class="avatar" :src="item.author_avatar_url"/>
-                <span class="nickname">{{item.author_nickname}}</span>
-              </div>
-              <div class="post-date">{{item.date_created}}</div>
-            </div>
-          </div>
+          <post-view-item :item="item" :is-detail="false"
+                          @delete="onPostDelete"/>
         </li>
       </ul>
       <div v-if="hasMore" class="block-more">
@@ -87,16 +44,15 @@
 </template>
 
 <script lang="ts">
-  import hljs from 'highlight.js';
   import {Component, Vue, Watch} from 'vue-property-decorator';
   import ProblemPost from '../classes/models/ProblemPost';
   import VueBase from '../classes/vue/VueBase';
-  import OnlineJudgeProblem from '../classes/models/OnlineJudgeProblem';
   import Member from '../classes/models/Member';
-  import OnlineJudgeSite from '../classes/models/OnlineJudgeSite';
-  import ProblemCategory from '../classes/models/ProblemCategory';
+  import PostViewItem from '../components/PostViewItem.vue';
 
-  @Component
+  @Component({
+    components: {PostViewItem},
+  })
   export default class Home extends VueBase {
     public items: ProblemPost[] = [];
     public page = 1;
@@ -157,48 +113,14 @@
       }
       // 获取数据并加入列表
       const resp = await vm.api('problem_post').get({}, {page_size: 10, page: vm.page, ...vm.query});
-      vm.items.splice(vm.items.length, 0, ...resp.data.results);
+      vm.items.splice(vm.items.length, 0, ...resp.data.results.map((item: any) => new ProblemPost(item)));
       vm.page += 1;
       vm.hasMore = resp.data.count > 0 && Math.floor((resp.data.count - 1) / 10) + 1 < resp.data.pages;
-      vm.$nextTick(() => {
-        // set hightlight
-        (document.querySelectorAll('.post-item pre.ql-syntax:not(.hljs)') as any).forEach(($el: Element) => {
-          hljs.highlightBlock($el);
-        });
-        // set collapse
-        (document.querySelectorAll('.post-item .post-content:not(.rendered)') as any).forEach(($el: Element) => {
-          // add class rendered
-          $el.className = $el.className.replace(/(^|\s)rendered(\s|$)/, '') + ' rendered';
-          const inHeight = $el.firstElementChild!.getBoundingClientRect().height;
-          const outHeight = $el.getBoundingClientRect().height;
-          if (outHeight < inHeight) {
-            // add class collapsable
-            $el.className = $el.className.replace(/(^|\s)collapsable(\s|$)/, '') + ' collapsable';
-          }
-        });
-      });
     }
 
-    public async deletePost(item: ProblemPost) {
+    public async onPostDelete(item: ProblemPost) {
       const vm = this;
-      await vm.api('problem_post').delete({id: item.id});
       vm.items.splice(vm.items.indexOf(item), 1);
-    }
-
-    public async viewProblem(problem: OnlineJudgeProblem) {
-      window.open(problem.online_judge_url, 'problem_' + problem.id);
-    }
-
-    public async collapse(e: any) {
-      const $el = e.target.parentElement;
-      const $out = $el.parentElement;
-      $out.className = $out.className.replace(/(^|\s)expand(\s|$)/, '');
-    }
-
-    public async expand(e: any) {
-      const $el = e.target.parentElement;
-      const $out = $el.parentElement;
-      $out.className = $out.className.replace(/(^|\s)expand(\s|$)/, '') + ' expand';
     }
 
     private async mounted() {
