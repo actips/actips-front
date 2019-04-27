@@ -72,14 +72,14 @@
 
     public async loadListOJSites() {
       const vm = this;
-      const resp = await vm.api('online_judge_site').get({page_size: 0});
+      const resp = await vm.api('online_judge_site').get({}, {page_size: 0});
       vm.filterSiteChoices.splice(1, 0,
         ... resp.data.results.map((item: any) => ({text: item.name, value: item.id})));
     }
 
     public async loadListCategories() {
       const vm = this;
-      const resp = await vm.api('problem_category').get({page_size: 0});
+      const resp = await vm.api('problem_category').get({}, {page_size: 0});
       vm.filterCategoryChoices.splice(1, 0,
         ... resp.data.results.map((item: any) => ({text: item.name, value: item.id})));
     }

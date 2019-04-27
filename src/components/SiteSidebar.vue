@@ -47,10 +47,10 @@
       const vm = this;
       let resp: any;
       // 读取分类列表
-      resp = await vm.api('problem_category').get({page_size: 0});
+      resp = await vm.api('problem_category').get({}, {page_size: 20, ordering: '-post_count'});
       vm.categories = resp.data.results.map((item: any) => new ProblemCategory(item));
       // 读取OJ列表
-      resp = await vm.api('online_judge_site').get({page_size: 0});
+      resp = await vm.api('online_judge_site').get({}, {page_size: 0});
       vm.onlineJudgeSites = resp.data.results.map((item: any) => new OnlineJudgeSite(item));
     }
   }

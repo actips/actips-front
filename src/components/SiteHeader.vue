@@ -52,20 +52,6 @@
   @Component
   export default class SiteHeader extends VueBase {
 
-    public loginWechat() {
-      const vm = this;
-      const form = document.createElement('form');
-      form.method = 'post';
-      form.action = vm.ctx.config.wxApiRoot + '/auth/' + vm.ctx.config.wxAppId + '/';
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'redirect_uri';
-      input.value = location.href;
-      form.appendChild(input);
-      document.body.appendChild(form);
-      form.submit();
-    }
-
     public async doLogout() {
       const vm = this;
       await vm.logout();

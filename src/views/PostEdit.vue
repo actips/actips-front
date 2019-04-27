@@ -248,7 +248,7 @@
 
     public async loadListOJSites() {
       const vm = this;
-      const resp = await vm.api('online_judge_site').get({page_size: 0});
+      const resp = await vm.api('online_judge_site').get({}, {page_size: 0});
       vm.listOJSites = resp.data.results.map((item: any) => new OnlineJudgeSite(item));
     }
 
@@ -313,7 +313,7 @@
 
     public async loadListCategories() {
       const vm = this;
-      const resp = await vm.api('problem_category').get({page_size: 0});
+      const resp = await vm.api('problem_category').get({}, {page_size: 0});
       vm.listCategories = resp.data.results.map((item: any) => new ProblemCategory(item));
       // 计算字典
       const items: { [key: number]: ProblemCategory } = {};
@@ -348,12 +348,17 @@
 
     private async mounted() {
       const vm = this;
-      const id = Number(vm.$route.params['id'] || 0);
+      // 没登录是不允许发布的，如果有，跳转到登录
+      const me = await vm.getCurrentUser();
+      if (!me) {
+        vm.loginWechat();
+      }
       // 读取题目列表
       await this.loadListCategories();
       // 读取OJ列表
       await this.loadListOJSites();
       // 加载 post 对象
+      const id = Number(vm.$route.params['id'] || 0);
       if (id) {
         const resp = await vm.api('problem_post').get({id});
         vm.item = resp.data;
