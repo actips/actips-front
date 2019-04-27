@@ -10,6 +10,8 @@
     <p>Github Group: <a href="https://github.com/actips/">https://github.com/actips/</a></p>
     <p>Welcome to contribute!</p>
     <br/>
+    <p>本项目计划接受代码提交，但暂时没有相关规范，有意向贡献的朋友们可以先就项目的贡献规范在 GitHub 项目的 Issue 中进行讨论。</p>
+    <br/>
     <p>Powered By: Easecloud Computer Technology Co. Ltd.</p>
   </div>
 </template>
