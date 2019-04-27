@@ -5,6 +5,7 @@ Vue.use(Router);
 
 import Home from '@/views/Home.vue';
 import About from '@/views/About.vue';
+import PostView from '@/views/PostView.vue';
 import PostEdit from '@/views/PostEdit.vue';
 import PostList from '@/views/PostList.vue';
 import Submit from '@/views/Submit.vue';
@@ -21,7 +22,8 @@ export default new Router({
     {path: '/about/', name: 'about', component: About},
     {path: '/submit/', name: 'submit', component: Submit},
     {path: '/challenge/', name: 'challenge', component: Challenge},
-    {path: '/post/:id/', name: 'post_edit', component: PostEdit},
+    {path: '/post/:id/', name: 'post_view', component: PostView},
+    {path: '/post/edit/:id/', name: 'post_edit', component: PostEdit},
     {path: '/post/', name: 'post_List', component: PostList},
   ],
 });

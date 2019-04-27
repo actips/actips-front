@@ -17,7 +17,9 @@
                :key="problem.id" :name="problem.site_code+problem.num" closable
                @on-close="removeProblem(i)">{{problem.site_code+problem.num}}
           </tag>
-          <i-button icon="ios-add" type="dashed" size="small"
+          <!-- 为了避免降低内容质量，暂时只支持引用一个题目 -->
+          <i-button v-if="!item.problems.length"
+                    icon="ios-add" type="dashed" size="small"
                     @click="addProblem()">添加题目
           </i-button>
         </form-item>
