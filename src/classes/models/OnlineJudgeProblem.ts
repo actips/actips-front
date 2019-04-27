@@ -1,11 +1,11 @@
 export default class OnlineJudgeProblem {
-  public id?: number;
-  public site?: number;
-  public site_code: string = '';
-  public num: string = '';
-  public title: string = '';
-  public content: string = '';
-  public online_judge_url: string = '';
+  public id = 0;
+  public site = 0;
+  public site_code = '';
+  public num = '';
+  public title = '';
+  public content = '';
+  public online_judge_url = '';
 
   constructor(data: { [key: string]: any }) {
     Object.assign(this, data);

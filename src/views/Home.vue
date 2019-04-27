@@ -88,7 +88,7 @@
 
 <script lang="ts">
   import hljs from 'highlight.js';
-  import {Component, Vue} from 'vue-property-decorator';
+  import {Component, Vue, Watch} from 'vue-property-decorator';
   import ProblemPost from '../classes/models/ProblemPost';
   import VueBase from '../classes/vue/VueBase';
   import OnlineJudgeProblem from '../classes/models/OnlineJudgeProblem';
@@ -131,8 +131,6 @@
     public async doQuery() {
       const vm = this;
       vm.$router.replace({query: vm.query});
-      await vm.loadItems(true);
-      // await vm.mounted();
     }
 
     public get query(): any {
@@ -161,7 +159,7 @@
       const resp = await vm.api('problem_post').get({}, {page_size: 10, page: vm.page, ...vm.query});
       vm.items.splice(vm.items.length, 0, ...resp.data.results);
       vm.page += 1;
-      vm.hasMore = resp.data.pages > 0 && Math.floor((resp.data.count - 1) / 10) + 1 < resp.data.pages;
+      vm.hasMore = resp.data.count > 0 && Math.floor((resp.data.count - 1) / 10) + 1 < resp.data.pages;
       vm.$nextTick(() => {
         // set hightlight
         (document.querySelectorAll('.post-item pre.ql-syntax:not(.hljs)') as any).forEach(($el: Element) => {
@@ -212,6 +210,15 @@
       vm.filterKeyword = (vm.$route.query.search || '') as string;
       vm.me = await vm.getCurrentUser();
       await vm.loadItems();
+    }
+
+    @Watch('$route')
+    private async beforeRouteUpdate(to: any, from: any) {
+      const vm = this;
+      vm.filterSiteId = Number(vm.$route.query.problems__site__id || 0);
+      vm.filterCategoryId = Number(vm.$route.query.categories__id || 0);
+      vm.filterKeyword = (vm.$route.query.search || '') as string;
+      await vm.loadItems(true);
     }
   }
 </script>

@@ -4,12 +4,14 @@
       <h3 class="title">题目分类</h3>
       <ul class="item-list">
         <li v-for="category in categories">
-          {{category.name}}
+          <a href="javascript:" @click="routeToCategory(category)">
+            {{category.name}} ({{category.post_count}})
+          </a>
         </li>
       </ul>
     </div>
     <div class="sidebar-block block-oj-sites">
-      <h3 class="title">OnlineJudge</h3>
+      <h3 class="title">OnlineJudge 支持</h3>
       <ul class="item-list">
         <li v-for="ojSite in onlineJudgeSites">
           <a :href="ojSite.homepage" target="_blank">{{ojSite.name}}</a>
@@ -29,6 +31,17 @@
   export default class SiteSidebar extends VueBase {
     public categories: ProblemCategory[] = [];
     public onlineJudgeSites: OnlineJudgeSite[] = [];
+
+    public routeToCategory(category: ProblemCategory) {
+      const vm = this;
+      // <router-link :to="{name: 'home', query:{categories__id:category.id}}">
+      //   {{category.name}}</router-link>
+      vm.$router.push({
+        name: 'home',
+        query: {categories__id: category.id.toString()},
+        replace: vm.$route.name === 'home',
+      });
+    }
 
     private async mounted() {
       const vm = this;

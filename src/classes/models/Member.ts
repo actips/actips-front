@@ -1,7 +1,7 @@
 export default class Member {
-  public user?: number;
-  public gender?: string;
-  public nickname?: string;
+  public user = 0;
+  public gender = '';
+  public nickname = '';
   public avatar_url?: string;
 
   constructor(data: { [key: string]: any }) {
