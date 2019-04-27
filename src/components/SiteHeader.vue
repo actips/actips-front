@@ -28,7 +28,7 @@
             <router-link :to="{name:'home'}">首页</router-link>
           </li>
           <li>
-            <a href="javascript:alert('功能计划：做不出来的题目找帮手？在这里发布吧！')">求助</a>
+            <router-link :to="{name:'question'}">问答</router-link>
           </li>
           <li>
             <router-link :to="{name:'submit'}">交题</router-link>
