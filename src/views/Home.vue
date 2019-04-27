@@ -1,15 +1,26 @@
 <template>
   <div>
     <div class="page-header">
-      <i-form inline class="filtering">
+      <i-form class="filtering" inline @keydown.native.enter.prevent>
         <form-item>
-          <i-select></i-select>
+          <i-select v-model="filterSiteId">
+            <i-option v-for="opt in filterSiteChoices"
+                      :value="opt.value" :key="opt.value">{{opt.text}}
+            </i-option>
+          </i-select>
         </form-item>
         <form-item>
-          <i-select></i-select>
+          <i-select v-model="filterCategoryId">
+            <i-option v-for="opt in filterCategoryChoices"
+                      :value="opt.value" :key="opt.value">{{opt.text}}
+            </i-option>
+          </i-select>
         </form-item>
         <form-item>
-          <i-input></i-input>
+          <i-input v-model="filterKeyword" @enter="doQuery"></i-input>
+        </form-item>
+        <form-item>
+          <i-button type="primary" icon="ios-search" @click="doQuery">搜索</i-button>
         </form-item>
       </i-form>
       <div class="actions">
@@ -82,22 +93,75 @@
   import VueBase from '../classes/vue/VueBase';
   import OnlineJudgeProblem from '../classes/models/OnlineJudgeProblem';
   import Member from '../classes/models/Member';
+  import OnlineJudgeSite from '../classes/models/OnlineJudgeSite';
+  import ProblemCategory from '../classes/models/ProblemCategory';
 
   @Component
   export default class Home extends VueBase {
     public items: ProblemPost[] = [];
     public page = 1;
-    public hasMore = true;
+    public hasMore = false;
     public me: Member | null = null;
 
-    public async loadItems() {
+    // OJ 选择
+    public filterSiteChoices: Array<{ text: string, value: number }> = [{text: '全部', value: 0}];
+    public filterSiteId = 0;
+
+    // 分类选择
+    public filterCategoryChoices: Array<{ text: string, value: number }> = [{text: '全部', value: 0}];
+    public filterCategoryId = 0;
+
+    // 关键词
+    public filterKeyword = '';
+
+    public async loadListOJSites() {
       const vm = this;
-      const resp = await vm.api('problem_post').get({page_size: 10, page: vm.page});
+      const resp = await vm.api('online_judge_site').get({page_size: 0});
+      vm.filterSiteChoices.splice(1, 0,
+        ... resp.data.results.map((item: any) => ({text: item.name, value: item.id})));
+    }
+
+    public async loadListCategories() {
+      const vm = this;
+      const resp = await vm.api('problem_category').get({page_size: 0});
+      vm.filterCategoryChoices.splice(1, 0,
+        ... resp.data.results.map((item: any) => ({text: item.name, value: item.id})));
+    }
+
+    public async doQuery() {
+      const vm = this;
+      vm.$router.replace({query: vm.query});
+      await vm.loadItems(true);
+      // await vm.mounted();
+    }
+
+    public get query(): any {
+      const vm = this;
+      const query: any = {};
+      if (vm.filterKeyword) {
+        query['search'] = vm.filterKeyword;
+      }
+      if (vm.filterCategoryId) {
+        query['categories__id'] = vm.filterCategoryId;
+      }
+      if (vm.filterSiteId) {
+        query['problems__site__id'] = vm.filterSiteId;
+      }
+      return query;
+    }
+
+    public async loadItems(reset = false) {
+      const vm = this;
+      // 如果重置
+      if (reset) {
+        vm.items = [];
+        vm.page = 1;
+      }
+      // 获取数据并加入列表
+      const resp = await vm.api('problem_post').get({}, {page_size: 10, page: vm.page, ...vm.query});
       vm.items.splice(vm.items.length, 0, ...resp.data.results);
       vm.page += 1;
-      if (Math.floor((resp.data.count - 1) / 10) + 1 === resp.data.pages) {
-        vm.hasMore = false;
-      }
+      vm.hasMore = resp.data.pages > 0 && Math.floor((resp.data.count - 1) / 10) + 1 < resp.data.pages;
       vm.$nextTick(() => {
         // set hightlight
         (document.querySelectorAll('.post-item pre.ql-syntax:not(.hljs)') as any).forEach(($el: Element) => {
@@ -141,8 +205,13 @@
 
     private async mounted() {
       const vm = this;
-      await vm.loadItems();
+      await vm.loadListOJSites();
+      await vm.loadListCategories();
+      vm.filterSiteId = Number(vm.$route.query.problems__site__id || 0);
+      vm.filterCategoryId = Number(vm.$route.query.categories__id || 0);
+      vm.filterKeyword = (vm.$route.query.search || '') as string;
       vm.me = await vm.getCurrentUser();
+      await vm.loadItems();
     }
   }
 </script>
@@ -154,7 +223,7 @@
     padding: 10px;
     height: 52px;
     border-bottom: 1px solid #F5F5F5;
-    overflow: hidden;
+    /*overflow: hidden;*/
     .filtering {
       display: inline-block;
     }
@@ -172,10 +241,10 @@
         border-bottom: 1px solid #F5F5F5;
         .post-header {
           .clearfix();
+          line-height: 36px;
+          margin-bottom: 15px;
           .post-title {
-            font-size: 14px;
-            line-height: 26px;
-            margin-bottom: 10px;
+            font-size: 18px;
             float: left;
             button {
               margin-right: 4px;
@@ -212,6 +281,7 @@
             .btn-collapse {
               position: absolute;
               display: block;
+              background: white;
               padding: 10px 4px;
               border: 1px solid #2d8cf0;
               border-radius: 5px 0 0 5px;
@@ -237,7 +307,7 @@
             &::before {
               content: "";
               position: absolute;
-              height: 80px;
+              height: 100px;
               bottom: 0;
               left: 0;
               right: 0;
@@ -246,12 +316,13 @@
             }
             .btn-expand {
               display: block;
-              margin: 20px auto;
+              margin: 10px auto;
               width: 5em;
               color: #2d8cf0;
               border: 1px solid #2d8cf0;
               text-align: center;
               border-radius: 4px;
+              background: white;
               position: relative;
               opacity: 0.7;
               .transition-duration(0.5s);

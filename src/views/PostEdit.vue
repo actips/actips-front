@@ -162,7 +162,7 @@
         ImageExtend: {
           loading: true,
           name: 'img',
-          action: this.ctx.config.apiRoot + '/image/',
+          action: this.ctx.config.apiRoot.replace(/\/$/, '') + '/image/',
           change(xhr: any, formData: any) {
             // console.log('change', arguments);
             const file = formData.get('img');
