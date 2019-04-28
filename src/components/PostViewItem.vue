@@ -74,15 +74,14 @@
         });
         // set collapse
         (document.querySelectorAll('.post-item .post-content:not(.rendered)') as any).forEach(($el: Element) => {
-          // add class rendered
-          $el.className = $el.className.replace(/(^|\s)rendered(\s|$)/, '') + ' rendered';
           const inHeight = $el.firstElementChild!.getBoundingClientRect().height;
           const outHeight = $el.getBoundingClientRect().height;
           // 只有当内容高于外框的时候才开启折叠
           if (!vm.isDetail && outHeight < inHeight) {
             // add class collapsable
             $el.className = $el.className.replace(/(^|\s)collapsable(\s|$)/, '') + ' collapsable';
-          }
+          // add class rendered
+          $el.className = $el.className.replace(/(^|\s)rendered(\s|$)/, '') + ' rendered';
         });
       });
     }
@@ -154,6 +153,9 @@
         &.expand .show-less {
           display: block;
         }
+      }
+      &.rendered:not(.collapsable) {
+        max-height:none;
       }
       &.expand {
         max-height: 9999px;

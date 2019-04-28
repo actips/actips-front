@@ -18,6 +18,14 @@
         </li>
       </ul>
     </div>
+    <div class="sidebar-block block-last-members">
+      <h3 class="title">最近访客</h3>
+      <ul class="item-list">
+        <li v-for="member in lastLoginMembers">
+          <a><img :src="member.avatar_url"/></a>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -26,11 +34,13 @@
   import VueBase from '../classes/vue/VueBase';
   import ProblemCategory from '../classes/models/ProblemCategory';
   import OnlineJudgeSite from '../classes/models/OnlineJudgeSite';
+  import Member from '../classes/models/Member'
 
   @Component
   export default class SiteSidebar extends VueBase {
     public categories: ProblemCategory[] = [];
     public onlineJudgeSites: OnlineJudgeSite[] = [];
+    public lastLoginMembers: Member[] = [];
 
     public routeToCategory(category: ProblemCategory) {
       const vm = this;
@@ -52,6 +62,9 @@
       // 读取OJ列表
       resp = await vm.api('online_judge_site').get({}, {page_size: 0});
       vm.onlineJudgeSites = resp.data.results.map((item: any) => new OnlineJudgeSite(item));
+      // 读取最近登录的10个用户列表
+      resp = await vm.api('member').get({action:'get_last_login_list'}, {count:10});
+      vm.lastLoginMembers = resp.data;
     }
   }
 </script>
@@ -89,6 +102,24 @@
         font-size: 15px;
         text-align: center;
         margin: 0 20px;
+      }
+    }
+    .block-last-members {
+      ul {
+        .clearfix();
+        margin: 10px -10px;
+        li {
+          float: left;
+          margin: 0 8px 8px 0;
+          a {
+            display: block;
+            img {
+              display: block;
+              width: 45px;
+              height: 45px;
+            }
+          }
+        }
       }
     }
   }
