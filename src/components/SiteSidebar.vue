@@ -22,7 +22,7 @@
       <h3 class="title">最近访客</h3>
       <ul class="item-list">
         <li v-for="member in lastLoginMembers">
-          <a><img :src="member.avatar_url"/></a>
+          <a><img :src="member.avatar_url" :alt="member.nickname" :title="member.nickname"/></a>
         </li>
       </ul>
     </div>

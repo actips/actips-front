@@ -80,6 +80,7 @@
           if (!vm.isDetail && outHeight < inHeight) {
             // add class collapsable
             $el.className = $el.className.replace(/(^|\s)collapsable(\s|$)/, '') + ' collapsable';
+          }
           // add class rendered
           $el.className = $el.className.replace(/(^|\s)rendered(\s|$)/, '') + ' rendered';
         });

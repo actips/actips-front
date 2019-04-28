@@ -15,12 +15,9 @@
       </div>
       <div class="logo">
         <pre>
- ______     ______     ______   __     ______   ______
-/\  __ \   /\  ___\   /\__  _\ /\ \   /\  == \ /\  ___\
-\ \  __ \  \ \ \____  \/_/\ \/ \ \ \  \ \  _-/ \ \___  \
- \ \_\ \_\  \ \_____\    \ \_\  \ \_\  \ \_\    \/\_____\
-  \/_/\/_/   \/_____/     \/_/   \/_/   \/_/     \/_____/
-        </pre>
+ ╔═╗╔═╗╔╦╗┬┌─┐┌─┐
+ ╠═╣║   ║ │├─┘└─┐
+ ╩ ╩╚═╝ ╩ ┴┴  └─┘</pre>
       </div>
       <div class="nav">
         <ul class="menu">
@@ -66,31 +63,33 @@
 
   .site-header {
     background: #F5F5F5;
-    padding-bottom: 15px;
+    /*padding-bottom: 15px;*/
     .wrapper {
       width: 1160px;
-      padding: 0 20px;
+      padding: 0 10px;
       margin: 0 auto;
-      height: 80px;
+      height: 60px;
       overflow: hidden;
       text-align: center;
     }
     .logo {
       float: left;
       text-align: left;
-      font-family: monospace;
-      font-size: 12px;
       font-weight: bolder;
-      line-height: 12px;
-      margin: 10px 0;
+      margin: 9px 0;
       display: inline-block;
+      pre {
+        /*font-family: monospace;*/
+        font-size: 14px;
+        line-height: 1em;
+      }
     }
     .nav {
       font-weight: bold;
       text-align: left;
       font-size: 14px;
       padding-left: 20px;
-      padding-top: 40px;
+      padding-top: 20px;
       float: left;
       line-height: 20px;
       ul.menu {
@@ -112,17 +111,17 @@
         .clearfix();
         .avatar {
           .circle();
-          width: 50px;
-          height: 50px;
-          margin: 15px;
+          width: 40px;
+          height: 40px;
+          margin: 10px;
           float: left;
         }
         .name {
-          margin: 20px 0 20px 80px;
+          margin: 10px 0 10px 60px;
         }
       }
       .block-nologin {
-        margin: 30px 0;
+        margin: 20px 0;
       }
     }
   }
