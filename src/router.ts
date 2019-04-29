@@ -8,9 +8,9 @@ import About from '@/views/About.vue';
 import Question from '@/views/Question.vue';
 import PostView from '@/views/PostView.vue';
 import PostEdit from '@/views/PostEdit.vue';
-import PostList from '@/views/PostList.vue';
 import Submit from '@/views/Submit.vue';
 import Challenge from '@/views/Challenge.vue';
+import Version from '@/views/Version.vue';
 
 export default new Router({
   mode: 'history',
@@ -26,6 +26,6 @@ export default new Router({
     {path: '/challenge/', name: 'challenge', component: Challenge},
     {path: '/post/:id/', name: 'post_view', component: PostView},
     {path: '/post/edit/:id/', name: 'post_edit', component: PostEdit},
-    {path: '/post/', name: 'post_List', component: PostList},
+    {path: '/version/', name: 'version', component: Version},
   ],
 });

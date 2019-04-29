@@ -17,7 +17,7 @@
         <pre>
  ╔═╗╔═╗╔╦╗┬┌─┐┌─┐
  ╠═╣║   ║ │├─┘└─┐
- ╩ ╩╚═╝ ╩ ┴┴  └─┘</pre>
+ ╩ ╩╚═╝ ╩ ┴┴  └─┘ v0.1.3</pre>
       </div>
       <div class="nav">
         <ul class="menu">
@@ -35,6 +35,9 @@
           </li>
           <li>
             <router-link :to="{name:'about'}">关于</router-link>
+          </li>
+          <li>
+            <router-link :to="{name:'version'}">版本</router-link>
           </li>
         </ul>
       </div>

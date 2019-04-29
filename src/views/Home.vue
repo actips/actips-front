@@ -20,7 +20,7 @@
           <i-input v-model="filterKeyword" @enter="doQuery"></i-input>
         </form-item>
         <form-item>
-          <i-button type="primary" icon="ios-search" @click="doQuery">搜索</i-button>
+          <i-button type="primary" icon="md-search" @click="doQuery">搜索</i-button>
         </form-item>
       </i-form>
       <div class="actions">
@@ -99,7 +99,7 @@
         query['categories__id'] = vm.filterCategoryId;
       }
       if (vm.filterSiteId) {
-        query['problems__site__id'] = vm.filterSiteId;
+        query['problem__site__id'] = vm.filterSiteId;
       }
       return query;
     }
@@ -166,8 +166,8 @@
       font-size: 14px;
       li.post-item {
         .clearfix();
-        padding: 20px 10px;
-        border-bottom: 1px solid #F5F5F5;
+        /*padding: 20px 10px;*/
+        /*border-bottom: 1px solid #F5F5F5;*/
         .post-header {
           .clearfix();
           line-height: 36px;

@@ -337,7 +337,7 @@
       }).then((resp) => {
         vm.modalProblemsProblem = resp.data;
       }, () => {
-        vm.$Message.error('没有匹配到输入的题目');
+        // vm.$Message.error('没有匹配到输入的题目');
         vm.modalProblemsProblem = null;
       });
       vm.$nextTick(() => {
