@@ -34,7 +34,7 @@
   import VueBase from '../classes/vue/VueBase';
   import ProblemCategory from '../classes/models/ProblemCategory';
   import OnlineJudgeSite from '../classes/models/OnlineJudgeSite';
-  import Member from '../classes/models/Member'
+  import Member from '../classes/models/Member';
 
   @Component
   export default class SiteSidebar extends VueBase {
@@ -62,8 +62,8 @@
       // 读取OJ列表
       resp = await vm.api('online_judge_site').get({}, {page_size: 0});
       vm.onlineJudgeSites = resp.data.results.map((item: any) => new OnlineJudgeSite(item));
-      // 读取最近登录的10个用户列表
-      resp = await vm.api('member').get({action:'get_last_login_list'}, {count:10});
+      // 读取最近登录的20个用户列表
+      resp = await vm.api('member').get({action: 'get_last_login_list'}, {count: 20});
       vm.lastLoginMembers = resp.data;
     }
   }

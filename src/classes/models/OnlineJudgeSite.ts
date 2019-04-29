@@ -6,7 +6,7 @@ export default class OnlineJudgeSite {
   // public problem_url_template = '';
   // public problem_title_regex='';
 
-  constructor(data: { [key: string]: any }) {
+  constructor(data: { [key: string]: any } = {}) {
     Object.assign(this, data);
   }
 }

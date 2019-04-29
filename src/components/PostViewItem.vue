@@ -2,12 +2,12 @@
   <div class="post-item" v-if="item">
     <div class="post-header">
       <div class="post-title">
-        <i-button v-for="problem in item.problems_item" :key="problem.id"
-                  size="small" @click="viewProblem(problem)">
-          {{problem.site_code}}{{problem.num}}
+        <i-button v-if="item.problem" :key="item.problem"
+                  size="small" @click="viewProblem(item.problem_url, item.problem)">
+          {{item.problem_site_code}}{{item.problem_num}}
         </i-button>
         <router-link :to="{name:'post_view',params:{id:item.id}}">
-          {{item.problems_item[0].title}}{{item.title&&' - '+item.title}}
+          {{item.problem_title}}{{item.title&&' - '+item.title}}
         </router-link>
       </div>
       <div class="post-actions">
@@ -93,8 +93,8 @@
       vm.$emit('remove', item);
     }
 
-    public async viewProblem(problem: OnlineJudgeProblem) {
-      window.open(problem.online_judge_url, 'problem_' + problem.id);
+    public async viewProblem(problemUrl: string, problemId: number) {
+      window.open(problemUrl, 'problem_' + problemId);
     }
 
     public async collapse(e: any) {
@@ -156,7 +156,7 @@
         }
       }
       &.rendered:not(.collapsable) {
-        max-height:none;
+        max-height: none;
       }
       &.expand {
         max-height: 9999px;

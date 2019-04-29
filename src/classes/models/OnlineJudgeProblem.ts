@@ -7,7 +7,7 @@ export default class OnlineJudgeProblem {
   public content = '';
   public online_judge_url = '';
 
-  constructor(data: { [key: string]: any }) {
+  constructor(data: { [key: string]: any } = {}) {
     Object.assign(this, data);
   }
 }

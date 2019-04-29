@@ -1,4 +1,4 @@
-import axios, {AxiosInstance} from 'axios';
+import axios, {AxiosInstance, AxiosResponse} from 'axios';
 import urljoin from 'url-join';
 import template from 'url-template';
 import Config from '@/classes/utils/Config';
@@ -29,6 +29,7 @@ export default class ApiResource {
   public template: any; // Template
 
   constructor(model: string, apiRoot: string = '', apiFormat: string = '', vm: any) {
+    const resource = this;
     const config: Config = vm.ctx.config;
     this.model = model;
     this.root = apiRoot || config.apiRoot;
@@ -44,6 +45,27 @@ export default class ApiResource {
     // return _this.request(method.toUpperCase(), ...arguments);
     // };
     // });
+
+    // 自动错误处理器
+    resource.axios.interceptors.response.use((response) => {
+      resource.notifyResponseMessage(response);
+      return response;
+    }, (error) => {
+      resource.notifyResponseMessage(error.response);
+      return Promise.reject(error);
+    });
+  }
+
+  public notifyResponseMessage(response: AxiosResponse) {
+    const resource = this;
+    if (response.data.msg) {
+      if (response.data.silent) {
+        return;
+      }
+      resource.vm.$Message[response.data.ok ? 'success' : 'warning'](response.data.msg);
+    } else if (response.status >= 400) {
+      resource.vm.$Message.error(JSON.stringify(response.data));
+    }
   }
 
 

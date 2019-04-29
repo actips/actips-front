@@ -12,15 +12,32 @@
         <form-item label="标题" :label-width="180">
           <i-input v-model="item.title"></i-input>
         </form-item>
-        <form-item label="OJ题目" :label-width="180" required>
-          <tag v-for="(problem,i) in item.problems_item"
-               :key="problem.id" :name="problem.site_code+problem.num" closable
-               @on-close="removeProblem(i)">{{problem.site_code+problem.num}}
+        <form-item label="是否原创" :label-width="180" class="field-origin">
+          <checkbox :value="item.origin_link===null" @input="changeOriginal">
+            <span class="description">为尊重原作者及避免重复，转载请注明来源。</span>
+          </checkbox>
+        </form-item>
+        <form-item label="原文链接" :label-width="180" v-if="item.origin_link!==null">
+          <i-input v-model="item.origin_link"
+                   :disabled="item.origin_link===null"></i-input>
+        </form-item>
+        <form-item label="对应题目" :label-width="180" required>
+          <tag v-if="item.problem" :name="item.problem_site_code+item.problem.num" closable
+               @on-close="removeProblem">{{item.problem_site_code+item.problem_num}}
           </tag>
-          <!-- 为了避免降低内容质量，暂时只支持引用一个题目 -->
-          <i-button v-if="!item.problems.length"
+          <i-button v-else
                     icon="ios-add" type="dashed" size="small"
-                    @click="addProblem()">添加题目
+                    @click="addProblem(0)">添加题目
+          </i-button>
+        </form-item>
+        <form-item label="其他关联题目" :label-width="180">
+          <tag v-for="(problem,i) in item.problems_related_item"
+               :key="problem.id" :name="problem.site_code+problem.num" closable
+               @on-close="removeProblemRelated(i)">{{problem.site_code+problem.num}}
+          </tag>
+          <i-button v-if="item.problems_related.length < 5"
+                    icon="ios-add" type="dashed" size="small"
+                    @click="addProblem(1)">添加题目
           </i-button>
         </form-item>
         <form-item label="分类标签" :label-width="180" required>
@@ -31,6 +48,13 @@
           <i-button icon="ios-add" type="dashed" size="small"
                     @click="addCategory()">添加标签
           </i-button>
+        </form-item>
+        <form-item label="难度评分" :label-width="180" class="field-rating">
+          <rate v-model="item.rating_difficulty" clearable style="margin-top: -4px"/>
+          <span class="description">
+            {{['未评分','水题','简单题','基础理论','需要组合/变通求解','特别难解'][Number(item.rating_difficulty)]}}
+            ({{item.rating_difficulty}})
+          </span>
         </form-item>
         <form-item label="正文" :label-width="180">
           <!--<i-input type="textarea" v-model="item.content"-->
@@ -125,7 +149,7 @@
 
   @Component({})
   export default class Home extends VueBase {
-    public item: ProblemPost | null = null;
+    public item = new ProblemPost();
 
     // 选择OJ题目
     public showModalProblems = false;
@@ -133,6 +157,7 @@
     public modalProblemsSiteId = 0;
     public modalProblemsNum = '';
     public modalProblemsProblem: OnlineJudgeProblem | null = null;
+    public addMode = 0; // 0 for problem, 1 for problems_related
     public pingWaiting = false;
 
     // 选择分类标签
@@ -201,34 +226,37 @@
       }));
     }
 
-    public async submit() {
+    public changeOriginal(value: any) {
       const vm = this;
-      if (vm.item) {
-        if (vm.submitWaiting) {
-          vm.$Message.warning('正在提交，请勿频繁点击...');
-          return;
-        }
-        // 前置校验
-        if (vm.item.content.replace(/\s/g, '').length < 30) {
-          vm.$Message.warning('写个题解怎么着总得有个30字吧～');
-          return;
-        }
-        // 执行提交
-        vm.submitWaiting = true;
-        if (vm.item.id) {
-          await vm.api('problem_post').patch({id: vm.item.id}, vm.item).then(() => {
-            vm.$router.push({name: 'home'});
-          }, () => 0);
-        } else {
-          await vm.api('problem_post').post(vm.item).then(() => {
-            vm.$router.push({name: 'home'});
-          }, () => 0);
-        }
-        vm.submitWaiting = false;
-      }
+      vm.item.origin_link = value ? null : '';
     }
 
-    public async addProblem() {
+    public async submit() {
+      const vm = this;
+      if (vm.submitWaiting) {
+        vm.$Message.warning('正在提交，请勿频繁点击...');
+        return;
+      }
+      // 前置校验
+      if (vm.item.content.replace(/\s/g, '').length < 30) {
+        vm.$Message.warning('写个题解怎么着总得有个30字吧～');
+        return;
+      }
+      // 执行提交
+      vm.submitWaiting = true;
+      if (vm.item.id) {
+        await vm.api('problem_post').patch({id: vm.item.id}, vm.item).then(() => {
+          vm.$router.push({name: 'home'});
+        }, () => 0);
+      } else {
+        await vm.api('problem_post').post(vm.item).then(() => {
+          vm.$router.push({name: 'home'});
+        }, () => 0);
+      }
+      vm.submitWaiting = false;
+    }
+
+    public async addProblem(addMode: number) {
       const vm = this;
       // 清除旧的选项
       vm.modalProblemsNum = '';
@@ -236,14 +264,49 @@
       vm.modalProblemsProblem = null;
       // 打开对话框
       vm.showModalProblems = true;
+      vm.addMode = addMode;
     }
 
-    public async removeProblem(index: number) {
+    public async confirmProblemAdd() {
       const vm = this;
-      if (vm.item) {
-        vm.item.problems.splice(index, 1);
-        vm.item.problems_item.splice(index, 1);
+      if (!vm.modalProblemsProblem) {
+        vm.$Message.info('还没有匹配到题目');
+        return;
       }
+      if (vm.addMode === 0) {
+        vm.item.problem = vm.modalProblemsProblem.id;
+        vm.item.problem_num = vm.modalProblemsProblem.num;
+        vm.item.problem_site_code = vm.modalProblemsProblem.site_code;
+      } else if (vm.addMode === 1) {
+        if (vm.modalProblemsProblem.id) {
+          if (vm.item.problems_related.indexOf(vm.modalProblemsProblem.id) > -1) {
+            vm.$Message.info('你已经添加过这道题目');
+            return;
+          }
+          if (vm.item.problems_related.length > 3) {
+            vm.$Message.error('最多不能绑定超过三道题目');
+          }
+          vm.item.problems_related.push(vm.modalProblemsProblem.id);
+          vm.item.problems_related_item.push(vm.modalProblemsProblem);
+        }
+      } else {
+        vm.$Message.error('模式错误');
+      }
+      // 关闭弹窗
+      vm.showModalProblems = false;
+    }
+
+    public async removeProblem() {
+      const vm = this;
+      vm.item.problem = 0;
+      vm.item.problem_num = '';
+      vm.item.problem_site_code = '';
+    }
+
+    public async removeProblemRelated(index: number) {
+      const vm = this;
+      vm.item.problems_related.splice(index, 1);
+      vm.item.problems_related_item.splice(index, 1);
     }
 
     public async loadListOJSites() {
@@ -285,26 +348,6 @@
       vm.pingWaiting = false;
     }
 
-    public async confirmProblemAdd() {
-      const vm = this;
-      if (!vm.modalProblemsProblem) {
-        vm.$Message.info('还没有匹配到题目');
-        return;
-      }
-      if (vm.item && vm.modalProblemsProblem.id) {
-        if (vm.item.problems.indexOf(vm.modalProblemsProblem.id) > -1) {
-          vm.$Message.info('你已经添加过这道题目');
-          return;
-        }
-        if (vm.item.problems.length > 3) {
-          vm.$Message.error('最多不能绑定超过三道题目');
-        }
-        vm.item.problems.push(vm.modalProblemsProblem.id);
-        vm.item.problems_item.push(vm.modalProblemsProblem);
-        vm.showModalProblems = false;
-      }
-    }
-
     public async addCategory() {
       const vm = this;
       // 展开对话框
@@ -325,9 +368,6 @@
 
     public async listCategoriesOnChange(keys: number[]) {
       const vm = this;
-      if (!vm.item) {
-        return;
-      }
       if (keys.length > 5) {
         vm.$Message.warning('不能选取超过5个分类');
         return;
@@ -340,10 +380,8 @@
 
     public async removeCategory(index: number) {
       const vm = this;
-      if (vm.item) {
-        vm.item.categories.splice(index, 1);
-        vm.item.categories_item.splice(index, 1);
-      }
+      vm.item.categories.splice(index, 1);
+      vm.item.categories_item.splice(index, 1);
     }
 
     private async mounted() {
@@ -383,6 +421,15 @@
       float: right;
       button {
         margin-left: 4px;
+      }
+    }
+  }
+
+  .page-content {
+    .field-origin, .field-rating {
+      .description {
+        color: #AAA;
+        margin-left: 5px;
       }
     }
   }

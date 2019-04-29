@@ -4,7 +4,7 @@ export default class Member {
   public nickname = '';
   public avatar_url?: string;
 
-  constructor(data: { [key: string]: any }) {
+  constructor(data: { [key: string]: any } = {}) {
     Object.assign(this, data);
   }
 }
