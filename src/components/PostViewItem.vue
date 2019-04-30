@@ -2,16 +2,6 @@
   <div class="post-item" v-if="item">
     <!-- post-header -->
     <div class="post-header">
-      <div class="post-title">
-        <i-button v-if="item.problem" :key="item.problem"
-                  size="small" @click="viewProblem(item.problem_url, item.problem)">
-          {{item.problem_site_code}}{{item.problem_num}}
-        </i-button>
-        <i-button size="small" ghost type="info" v-if="item.origin_link===null">原创</i-button>
-        <router-link :to="{name:'post_view',params:{id:item.id}}">
-          {{item.problem_title}}{{item.title&&' - '+item.title}}
-        </router-link>
-      </div>
       <div class="post-actions">
         <i-button v-if="me&&me.user===item.author"
                   size="small" type="warning" ghost
@@ -23,6 +13,17 @@
                     size="small" type="error" ghost>删除
           </i-button>
         </poptip>
+        <i-button v-if="me" type="info" size="small" ghost @click="openComment(item)">评论</i-button>
+      </div>
+      <div class="post-title">
+        <i-button v-if="item.problem" :key="item.problem"
+                  size="small" @click="viewProblem(item.problem_url, item.problem)">
+          {{item.problem_site_code}}{{item.problem_num}}
+        </i-button>
+        <i-button size="small" ghost type="info" v-if="item.origin_link===null">原创</i-button>
+        <router-link :to="{name:'post_view',params:{id:item.id}}">
+          {{item.problem_title}}{{item.title&&' - '+item.title}}
+        </router-link>
       </div>
     </div>
     <!-- post-content -->
@@ -61,6 +62,10 @@
           ({{item.rating_difficulty}})
         </span>
       </div>
+      <!-- 评论模块 -->
+      <!--:editable="postEditingId==item.id"-->
+      <post-comment class="block-comments" :post="item.id"
+                    :editable="true" ref="comment"/>
     </div>
   </div>
 </template>
@@ -72,8 +77,11 @@
   import VueBase from '../classes/vue/VueBase';
   import OnlineJudgeProblem from '../classes/models/OnlineJudgeProblem';
   import Member from '../classes/models/Member';
+  import PostComment from './PostComment.vue';
 
-  @Component
+  @Component({
+    components: {PostComment},
+  })
   export default class PostViewItem extends VueBase {
     @Prop({type: ProblemPost, required: true})
     public item?: ProblemPost;
@@ -82,6 +90,8 @@
     public isDetail?: boolean;
 
     public me: Member | null = null;
+
+    // public postEditingId = 0;
 
     public async renderItem() {
       const vm = this;
@@ -104,6 +114,13 @@
           $el.className = $el.className.replace(/(^|\s)rendered(\s|$)/, '') + ' rendered';
         });
       });
+    }
+
+    public async openComment(item: ProblemPost) {
+      const vm = this;
+      // vm.postEditingId = item.id;
+      const componentComment = vm.$refs.comment as Vue;
+      componentComment.$el.scrollIntoView();
     }
 
     public async deletePost(item: ProblemPost) {
@@ -142,6 +159,7 @@
   .post-item {
     .clearfix();
     /*border-bottom: 1px solid #F5F5F5;*/
+    background: white;
     margin: 20px 0;
     border: 1px solid #EEEEEE;
     .post-header {
@@ -154,13 +172,14 @@
       .post-title {
         padding: 10px 0;
         font-size: 18px;
-        float: left;
+        margin-right: 130px;
         button {
           margin-right: 4px;
         }
       }
       .post-actions {
         float: right;
+        margin-top: 8px;
         button {
           margin-right: 4px;
         }
@@ -269,7 +288,6 @@
         margin-bottom: 10px;
       }
       .post-ratings {
-        font-size: 12px;
         float: left;
         clear: left;
         padding-left: 9px;
@@ -299,6 +317,9 @@
           line-height: 24px;
           color: #888888;
         }
+      }
+      .block-comments {
+        border-top: 1px solid #eee;
       }
     }
   }

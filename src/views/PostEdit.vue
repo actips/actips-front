@@ -57,8 +57,6 @@
           </span>
         </form-item>
         <form-item label="正文" :label-width="180">
-          <!--<i-input type="textarea" v-model="item.content"-->
-          <!--:rows="20"></i-input>-->
           <quill-editor v-model="item.content"
                         :options="editorOptions"></quill-editor>
         </form-item>

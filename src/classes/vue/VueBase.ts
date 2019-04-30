@@ -69,5 +69,28 @@ export default class VueBase extends Vue {
     form.submit();
   }
 
+  // 工具函数
+  public prettyDate(date: string | Date) {
+    const now = new Date();
+    const then = new Date(date);
+    const seconds = Math.floor((Number(now) - Number(then)) / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    if (minutes <= 3) {
+      return '刚刚';
+    } else if (hours < 1) {
+      return minutes + '分钟前';
+    } else if (hours < 12) {
+      return hours + '小时前';
+    } else if (days < 1) {
+      return '今天';
+    } else if (days <= 3) {
+      return days + '天前';
+    } else {
+      return '很久以前';
+    }
+  }
+
 }
 
