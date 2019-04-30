@@ -7,7 +7,12 @@
         <!-- TODO: 点击要链接到用户的个人页面 -->
         <a class="comment-author">{{comment.author_nickname}}</a>
         <span class="comment-date">{{prettyDate(comment.date_created)}}</span>
-        <a class="btn-reply" href="javascript:" v-if="editable&&comment.author!==ctx.me.user"
+        <poptip word-wrap width="120" title="确认删除？" confirm
+                v-if="comment.author===ctx.me.user"
+                @on-ok="deleteComment(comment)">
+          <a class="btn-delete" href="javascript:">删除</a>
+        </poptip>
+        <a class="btn-reply" href="javascript:" v-else-if="editable"
            @click="parent=comment">回复</a>
       </li>
     </ul>
@@ -75,9 +80,8 @@
     public async deleteComment(comment: Comment) {
       const vm = this;
       await vm.api('comment').delete({id: comment.id});
-      // vm.$emit('remove', comment);
-      // TODO: 动作完成之后重新加载
-      // await vm.mounted();
+      vm.$emit('remove', comment);
+      await vm.renderItem();
     }
 
     public async submit() {
@@ -125,6 +129,13 @@
           font-size: 12px;
           color: #AAA;
         }
+        a.btn-delete {
+          color: #ed4014;
+          margin-left: 10px;
+          opacity: 0;
+          font-size: 12px;
+          .transition(opacity, 0.2s);
+        }
         a.btn-reply {
           color: #2d8cf0;
           margin-left: 10px;
@@ -132,8 +143,10 @@
           font-size: 12px;
           .transition(opacity, 0.2s);
         }
-        &:hover a.btn-reply {
-          opacity: 1;
+        &:hover {
+          a.btn-reply, a.btn-delete {
+            opacity: 1;
+          }
         }
       }
     }
@@ -148,7 +161,7 @@
         }
         .notice {
           &.exceed {
-            color: red;
+            color: #ed4014;
           }
         }
         .btn-submit {
