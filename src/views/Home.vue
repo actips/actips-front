@@ -37,7 +37,7 @@
         </li>
       </ul>
       <div v-if="hasMore" class="block-more">
-        <i-button size="large" @click="loadItems">加载更多</i-button>
+        <i-button size="large" @click="loadItems(false)">加载更多</i-button>
       </div>
     </div>
   </div>
@@ -115,9 +115,8 @@
       const page_size = 5;
       const resp = await vm.api('problem_post').get({}, {page_size, page: vm.page, ...vm.query});
       vm.items.splice(vm.items.length, 0, ...resp.data.results.map((item: any) => new ProblemPost(item)));
+      vm.hasMore = vm.page < resp.data.pages;
       vm.page += 1;
-      vm.hasMore = resp.data.count > 0 &&
-        Math.floor((resp.data.count - 1) / page_size) + 1 < resp.data.pages;
     }
 
     public async onPostDelete(item: ProblemPost) {
