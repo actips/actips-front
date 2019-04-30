@@ -71,17 +71,20 @@
         v-model="showModalCategories"
         class="modal-categories"
         title="分类标签"
-        :width="595"
+        :width="400"
         :mask-closable="false"
-        :footer-hide="true">
-      <transfer
-          :titles="['题目分类', '已选(≤5个)']"
-          :data="listCategoriesTransferData"
-          filterable
-          :list-style="{width: '250px', height: '320px'}"
-          :target-keys="item.categories"
-          @on-change="listCategoriesOnChange">
-      </transfer>
+        @on-ok="modalCategoriesOk"
+        :footer-hide="false">
+      <cascader v-model="modalCategoriesValue" filterable
+                :data="modalCategoriesCascaderData"></cascader>
+      <!--<transfer-->
+      <!--:titles="['题目分类', '已选(≤5个)']"-->
+      <!--:data="listCategoriesTransferData"-->
+      <!--filterable-->
+      <!--:list-style="{width: '250px', height: '320px'}"-->
+      <!--:target-keys="item.categories"-->
+      <!--@on-change="listCategoriesOnChange">-->
+      <!--</transfer>-->
     </modal>
 
     <!--TODO: 暂时图快，后期的话一旦出现需要复用就重构成模块-->
@@ -161,6 +164,7 @@
 
     // 选择分类标签
     public showModalCategories = false;
+    public modalCategoriesValue = [];
     public listCategories: ProblemCategory[] = [];
     public mapCategories: { [key: number]: ProblemCategory } = {};
 
@@ -215,15 +219,35 @@
       },
     };
 
-    public get listCategoriesTransferData() {
+    public get modalCategoriesCascaderData(): any[] {
       const vm = this;
-      return vm.listCategories.map((item) => ({
-        key: item.id,
-        label: (item.seq.length === 12 ? '　　└─ ' : item.seq.length === 8 ? '└─ ' : '') + item.name,
-        description: '',
-        disabled: '',
-      }));
+      const ans: any[] = [];
+      const map: any = {};
+      vm.listCategories.forEach((cat) => {
+        map[cat.id] = {value: cat.id, label: cat.name};
+      });
+      vm.listCategories.forEach((cat) => {
+        if (cat.parent) {
+          if (!map[cat.parent].children) {
+            map[cat.parent].children = [];
+          }
+          map[cat.parent].children.push(map[cat.id]);
+        } else {
+          ans.push(map[cat.id]);
+        }
+      });
+      return ans;
     }
+
+    // public get listCategoriesTransferData() {
+    //   const vm = this;
+    //   return vm.listCategories.map((item) => ({
+    //     key: item.id,
+    //     label: (item.seq.length === 12 ? '　　└─ ' : item.seq.length === 8 ? '└─ ' : '') + item.name,
+    //     description: '',
+    //     disabled: '',
+    //   }));
+    // }
 
     public changeOriginal(value: any) {
       const vm = this;
@@ -355,7 +379,7 @@
 
     public async loadListCategories() {
       const vm = this;
-      const resp = await vm.api('problem_category').get({}, {page_size: 0, ordering: 'seq'});
+      const resp = await vm.api('problem_category').get({}, {page_size: 0, ordering: 'id'});
       vm.listCategories = resp.data.results.map((item: any) => new ProblemCategory(item));
       // 计算字典
       const items: { [key: number]: ProblemCategory } = {};
@@ -365,16 +389,29 @@
       vm.mapCategories = items;
     }
 
-    public async listCategoriesOnChange(keys: number[]) {
+    // public async listCategoriesOnChange(keys: number[]) {
+    //   const vm = this;
+    //   if (keys.length > 5) {
+    //     vm.$Message.warning('不能选取超过5个分类');
+    //     return;
+    //   }
+    //   vm.item.categories = keys;
+    //   // 映射到分类对象
+    //   vm.item.categories_item =
+    //     keys.map((key: number) => vm.mapCategories[key]).filter((item: any) => !!item);
+    // }
+    public async modalCategoriesOk() {
       const vm = this;
-      if (keys.length > 5) {
-        vm.$Message.warning('不能选取超过5个分类');
-        return;
+      if (vm.modalCategoriesValue.length) {
+        const cat = vm.mapCategories[
+          vm.modalCategoriesValue[vm.modalCategoriesValue.length - 1]];
+        if (vm.item.categories.indexOf(cat.id) > -1) {
+          return false;
+        }
+        vm.item.categories.push(cat.id);
+        vm.item.categories_item.push(cat);
       }
-      vm.item.categories = keys;
-      // 映射到分类对象
-      vm.item.categories_item =
-        keys.map((key: number) => vm.mapCategories[key]).filter((item: any) => !!item);
+      return false;
     }
 
     public async removeCategory(index: number) {
