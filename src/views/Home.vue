@@ -112,10 +112,12 @@
         vm.page = 1;
       }
       // 获取数据并加入列表
-      const resp = await vm.api('problem_post').get({}, {page_size: 10, page: vm.page, ...vm.query});
+      const page_size = 5;
+      const resp = await vm.api('problem_post').get({}, {page_size, page: vm.page, ...vm.query});
       vm.items.splice(vm.items.length, 0, ...resp.data.results.map((item: any) => new ProblemPost(item)));
       vm.page += 1;
-      vm.hasMore = resp.data.count > 0 && Math.floor((resp.data.count - 1) / 10) + 1 < resp.data.pages;
+      vm.hasMore = resp.data.count > 0 &&
+        Math.floor((resp.data.count - 1) / page_size) + 1 < resp.data.pages;
     }
 
     public async onPostDelete(item: ProblemPost) {

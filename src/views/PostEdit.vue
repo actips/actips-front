@@ -43,7 +43,8 @@
         <form-item label="分类标签" :label-width="180" required>
           <tag v-for="(category,i) in item.categories_item"
                :key="category.id" :name="category.id" closable
-               @on-close="removeCategory(i)">{{category.name}}
+               @on-close="removeCategory(i)">
+            {{category.name}}
           </tag>
           <i-button icon="ios-add" type="dashed" size="small"
                     @click="addCategory()">添加标签
@@ -218,7 +219,7 @@
       const vm = this;
       return vm.listCategories.map((item) => ({
         key: item.id,
-        label: item.name,
+        label: (item.seq.length === 12 ? '　　└─ ' : item.seq.length === 8 ? '└─ ' : '') + item.name,
         description: '',
         disabled: '',
       }));
@@ -354,7 +355,7 @@
 
     public async loadListCategories() {
       const vm = this;
-      const resp = await vm.api('problem_category').get({}, {page_size: 0});
+      const resp = await vm.api('problem_category').get({}, {page_size: 0, ordering: 'seq'});
       vm.listCategories = resp.data.results.map((item: any) => new ProblemCategory(item));
       // 计算字典
       const items: { [key: number]: ProblemCategory } = {};

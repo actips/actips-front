@@ -62,8 +62,8 @@
       // 读取OJ列表
       resp = await vm.api('online_judge_site').get({}, {page_size: 0});
       vm.onlineJudgeSites = resp.data.results.map((item: any) => new OnlineJudgeSite(item));
-      // 读取最近登录的20个用户列表
-      resp = await vm.api('member').get({action: 'get_last_login_list'}, {count: 20});
+      // 读取最近登录的50个用户列表
+      resp = await vm.api('member').get({action: 'get_last_login_list'}, {count: 50});
       vm.lastLoginMembers = resp.data;
     }
   }

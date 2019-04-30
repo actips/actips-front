@@ -30,7 +30,7 @@
     <div class="post-content">
       <div class="origin-link" v-if="item.origin_link">
         原文链接：
-        <a :href="item.origin_link">{{item.origin_link}}
+        <a :href="item.origin_link" target="_blank">{{item.origin_link}}
           <icon type="md-link"/>
         </a>
       </div>
