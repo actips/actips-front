@@ -106,6 +106,7 @@
 
     public async loadItems(reset = false) {
       const vm = this;
+      vm.hasMore = false;
       // 如果重置
       if (reset) {
         vm.items = [];
@@ -150,7 +151,7 @@
   @import '../libs/less-template/template-defines';
 
   .page-header {
-    padding: 10px;
+    padding: 10px 0;
     height: 52px;
     border-bottom: 1px solid #F5F5F5;
     /*overflow: hidden;*/

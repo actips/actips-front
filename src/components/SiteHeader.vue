@@ -3,7 +3,9 @@
     <div class="wrapper">
       <div class="status">
         <div v-if="ctx.me" class="block-user">
-          <img class="avatar" :src="ctx.me.avatar_url"/>
+          <router-link :to="{name:'personal_profile'}">
+            <img class="avatar" :src="ctx.me.avatar_url"/>
+          </router-link>
           <div class="name">
             <div>{{ctx.me.nickname}}</div>
             <div><a @click="doLogout()" href="javascript:">注销</a></div>
@@ -14,10 +16,8 @@
         </div>
       </div>
       <div class="logo">
-        <pre>
- ╔═╗╔═╗╔╦╗┬┌─┐┌─┐
- ╠═╣║   ║ │├─┘└─┐
- ╩ ╩╚═╝ ╩ ┴┴  └─┘ v0.1.4</pre>
+        <img src="../assets/images/ACTips-40.png"/>
+        <pre>v0.1.5</pre>
       </div>
       <div class="nav">
         <ul class="menu">
@@ -79,12 +79,16 @@
       float: left;
       text-align: left;
       font-weight: bolder;
-      margin: 9px 0;
       display: inline-block;
+      img {
+        float: left;
+      }
       pre {
+        float: left;
         /*font-family: monospace;*/
+        margin-left: 5px;
         font-size: 14px;
-        line-height: 1em;
+        margin-top: 24px;
       }
     }
     .nav {

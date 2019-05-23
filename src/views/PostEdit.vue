@@ -14,7 +14,7 @@
         </form-item>
         <form-item label="是否原创" :label-width="180" class="field-origin">
           <checkbox :value="item.origin_link===null" @input="changeOriginal">
-            <span class="description">为尊重原作者及避免重复，转载请注明来源。</span>
+            <span class="description">如果文章为原创，请勾选；或者需要显式填写下方的原文链接。</span>
           </checkbox>
         </form-item>
         <form-item label="原文链接" :label-width="180" v-if="item.origin_link!==null">
