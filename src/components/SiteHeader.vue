@@ -17,7 +17,7 @@
       </div>
       <div class="logo">
         <img src="../assets/images/ACTips-40.png"/>
-        <pre>v0.1.5</pre>
+        <pre>v0.1.6</pre>
       </div>
       <div class="nav">
         <ul class="menu">
@@ -26,6 +26,9 @@
           </li>
           <li>
             <router-link :to="{name:'sites'}">OJ</router-link>
+          </li>
+          <li>
+            <router-link :to="{name:'problem_list'}">题库</router-link>
           </li>
           <li>
             <router-link :to="{name:'question'}">问答</router-link>

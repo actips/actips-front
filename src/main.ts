@@ -10,6 +10,7 @@ import 'font-awesome/css/font-awesome.css';
 import Vue from 'vue';
 import iView from 'iview';
 import VueQuillEditor from 'vue-quill-editor';
+import VueMarkdown from 'vue-markdown';
 
 import App from './App.vue';
 import router from './router';
@@ -17,6 +18,7 @@ import VueRoot from '@/classes/vue/VueRoot';
 
 Vue.use(iView);
 Vue.use(VueQuillEditor);
+Vue.component('vue-markdown', VueMarkdown);
 
 Vue.config.productionTip = false;
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="page-header">
-      <h3 class="title">Online Judge 支持列表</h3>
+      <h3 class="title">题库</h3>
     </div>
     <div class="page-body">
       <i-table :columns="columns" :data="items"></i-table>
@@ -15,60 +15,43 @@
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator';
   import VueBase from '../classes/vue/VueBase';
-  import OnlineJudgeSite from '../classes/models/OnlineJudgeSite';
+  import OnlineJudgeProblem from '../classes/models/OnlineJudgeProblem';
 
   @Component
   export default class OJSiteList extends VueBase {
-    public items: OnlineJudgeSite[] = [];
+    public items: OnlineJudgeProblem[] = [];
     public page = 1;
-    public page_size = 50;
+    public page_size = 20;
     public data_count = 0;
 
     public columns = [
-      {title: 'ID', key: 'id', width: 50},
-      {title: '简码', key: 'code', width: 120},
-      {title: '名称', key: 'name'},
+      {title: 'ID', key: 'id', width: 80},
+      {title: 'OJ', key: 'site_code', width: 120},
+      {title: '编号', key: 'num', width: 120},
+      {title: '标题', key: 'title'},
       {
-        title: '支持',
+        title: '可用',
         align: 'center',
         width: 60,
         render(h, {row, index, column}) {
-          return h('i', {class: {'fa': true, 'fa-check': row.is_supported}});
+          return h('i', {class: {'fa': true, 'fa-check': row.is_synced}});
         },
       },
       {
-        title: '题库',
+        title: '操作',
         align: 'center',
         width: 60,
         render(h, {row, index, column}) {
-          const yes = row.supported_features.indexOf('parse_problem') > -1;
-          return h('a', {
-            props: {href: 'javascript:'},
-            class: {'fa': true, 'fa-check': yes},
+          return h('i-button', {
+            props: {
+              size: 'small',
+            },
             on: {
               click() {
-                (window as any).app.$router.push({name: 'problem_list'});
+                (window as any).app.$router.push({name: 'problem_view', params: {id: row.id}});
               },
             },
-          });
-        },
-      },
-      {
-        title: '交题',
-        align: 'center',
-        width: 60,
-        render(h, {row, index, column}) {
-          const yes = row.supported_features.indexOf('submit_problem') > -1;
-          return h('i', {class: {'fa': true, 'fa-check': yes}});
-        },
-      },
-      {
-        title: '登录',
-        align: 'center',
-        width: 60,
-        render(h, {row, index, column}) {
-          const yes = row.supported_features.indexOf('check_context_validity') > -1;
-          return h('i', {class: {'fa': true, 'fa-check': yes}});
+          }, '查看');
         },
       },
     ];
@@ -79,18 +62,19 @@
       if (page) {
         vm.page = page;
       }
-      const resp = await vm.api('online_judge_site').get({}, {
+      const resp = await vm.api('online_judge_problem').get({}, {
         page_size: vm.page_size,
         page: vm.page,
-        ordering: 'pk',
+        ordering: 'site,num',
+        is_synced: 'True',
       });
       vm.data_count = resp.data.count;
-      vm.items.splice(0, vm.items.length, ...resp.data.results.map((item: any) => new OnlineJudgeSite(item)));
+      vm.items.splice(0, vm.items.length, ...resp.data.results.map((item: any) => new OnlineJudgeProblem(item)));
     }
 
     public async mounted() {
       const vm = this;
-      vm.htmlTitle = 'Online Judge 支持';
+      vm.htmlTitle = '题库';
       await vm.loadItems();
     }
   }

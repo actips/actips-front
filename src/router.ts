@@ -31,6 +31,8 @@ export default new Router({
     {path: '/post/:id', name: 'post_view', component: () => import('@/views/PostView.vue')},
     {path: '/post/edit/:id', name: 'post_edit', component: () => import('@/views/PostEdit.vue')},
     {path: '/version', name: 'version', component: () => import('@/views/Version.vue')},
+    {path: '/problems', name: 'problem_list', component: () => import('@/views/ProblemList.vue')},
+    {path: '/problem/:id', name: 'problem_view', component: () => import('@/views/ProblemView.vue')},
     {
       path: '/personal',
       name: 'personal',

@@ -26,6 +26,7 @@
     "url-template": "^2.0.8",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
+    "vue-markdown": "^2.2.4",
     "vue-property-decorator": "^8.1.0",
     "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.0.3"
