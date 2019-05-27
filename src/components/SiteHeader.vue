@@ -25,6 +25,9 @@
             <router-link :to="{name:'home'}">首页</router-link>
           </li>
           <li>
+            <router-link :to="{name:'sites'}">OJ</router-link>
+          </li>
+          <li>
             <router-link :to="{name:'question'}">问答</router-link>
           </li>
           <li>

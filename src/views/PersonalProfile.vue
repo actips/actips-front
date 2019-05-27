@@ -120,8 +120,9 @@
       vm.password = '';
     }
 
-    private async mounted() {
+    public async mounted() {
       const vm = this;
+      vm.htmlTitle = '个人资料';
       vm.me = await vm.getCurrentUser(true);
     }
 

@@ -50,9 +50,7 @@
   import Member from '../classes/models/Member';
   import PostViewItem from '../components/PostViewItem.vue';
 
-  @Component({
-    components: {PostViewItem},
-  })
+  @Component({components: {PostViewItem}})
   export default class Home extends VueBase {
     public items: ProblemPost[] = [];
     public page = 1;
@@ -125,8 +123,9 @@
       vm.items.splice(vm.items.indexOf(item), 1);
     }
 
-    private async mounted() {
+    public async mounted() {
       const vm = this;
+      vm.htmlTitle = vm.defaultHtmlTitle;
       await vm.loadListOJSites();
       await vm.loadListCategories();
       vm.filterSiteId = Number(vm.$route.query.problems__site__id || 0);
@@ -137,7 +136,7 @@
     }
 
     @Watch('$route')
-    private async beforeRouteUpdate(to: any, from: any) {
+    public async beforeRouteUpdate(to: any, from: any) {
       const vm = this;
       vm.filterSiteId = Number(vm.$route.query.problems__site__id || 0);
       vm.filterCategoryId = Number(vm.$route.query.categories__id || 0);

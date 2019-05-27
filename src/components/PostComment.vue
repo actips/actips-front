@@ -98,7 +98,7 @@
       vm.content = '';
     }
 
-    private async mounted() {
+    public async mounted() {
       const vm = this;
       await vm.renderItem();
     }

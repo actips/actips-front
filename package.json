@@ -14,6 +14,7 @@
     "@types/url-template": "^2.0.28",
     "axios": "^0.18.0",
     "core-js": "^2.6.5",
+    "font-awesome": "^4.7.0",
     "highlight.js": "^9.15.6",
     "iview": "^3.4.0",
     "less": "^3.9.0",

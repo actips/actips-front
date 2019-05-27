@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import {Component, Watch} from 'vue-property-decorator';
 import GlobalContext from '@/classes/utils/GlobalContext';
 import ApiResource from '@/classes/utils/ApiResource';
 import Member from '@/classes/models/Member';
@@ -6,9 +7,35 @@ import VueRoot from '@/classes/vue/VueRoot';
 
 export default class VueBase extends Vue {
 
+  public defaultHtmlTitle = 'ACTips.org - 为 ACMer\'s 量身定造的成长社区';
+
   get ctx(): GlobalContext {
     return (this.$root as VueRoot).globalContext;
   }
+
+  set htmlTitle(title: string) {
+    const vm = this;
+    if (title !== vm.defaultHtmlTitle) {
+      title += ' - ACTips.org';
+    }
+    document.getElementsByTagName('title')[0].innerText = title;
+  }
+
+  // public async reload() {
+  //   // 子类实现
+  //   console.log('you');
+  // }
+  //
+  // public async mounted() {
+  //   const vm = this;
+  //   await vm.reload();
+  // }
+  //
+  // @Watch('$route')
+  // public async beforeRouteUpdate(to: any, from: any) {
+  //   const vm = this;
+  //   await vm.reload();
+  // }
 
   // 从性能角度来看，可以考虑将多次的构造缓存下来，支持重复使用
   public api(model: string, apiRoot = '', apiFormat = '') {

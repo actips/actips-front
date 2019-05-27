@@ -145,7 +145,7 @@
       $out.className = $out.className.replace(/(^|\s)expand(\s|$)/, '') + ' expand';
     }
 
-    private async mounted() {
+    public async mounted() {
       const vm = this;
       vm.me = await vm.getCurrentUser();
       await vm.renderItem();

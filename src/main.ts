@@ -5,6 +5,7 @@ import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
 import '@/assets/css/style.less';
+import 'font-awesome/css/font-awesome.css';
 
 import Vue from 'vue';
 import iView from 'iview';

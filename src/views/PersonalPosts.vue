@@ -56,8 +56,9 @@
       vm.loadItems(true);
     }
 
-    private async mounted() {
+    public async mounted() {
       const vm = this;
+      vm.htmlTitle = '我的题解';
       await vm.loadItems();
     }
   }

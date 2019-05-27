@@ -53,7 +53,7 @@
       });
     }
 
-    private async mounted() {
+    public async mounted() {
       const vm = this;
       let resp: any;
       // 读取分类列表

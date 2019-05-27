@@ -420,7 +420,7 @@
       vm.item.categories_item.splice(index, 1);
     }
 
-    private async mounted() {
+    public async mounted() {
       const vm = this;
       // 没登录是不允许发布的，如果有，跳转到登录
       const me = await vm.getCurrentUser();
@@ -436,8 +436,10 @@
       if (id) {
         const resp = await vm.api('problem_post').get({id});
         vm.item = resp.data;
+        vm.htmlTitle = '[编辑] ' + vm.item.title;
       } else {
         vm.item = new ProblemPost({});
+        vm.htmlTitle = '发布题解';
       }
     }
   }

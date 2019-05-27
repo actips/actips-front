@@ -11,7 +11,7 @@
         </div>
       </div>
     </div>
-    <div class="site-footer"></div>
+    <site-footer></site-footer>
   </div>
 </template>
 
@@ -20,13 +20,14 @@
   import {Component} from 'vue-property-decorator';
   import VueBase from '@/classes/vue/VueBase';
   import SiteHeader from '@/components/SiteHeader.vue';
+  import SiteFooter from '@/components/SiteFooter.vue';
   import SiteSidebar from '@/components/SiteSidebar.vue';
 
-  @Component({components: {SiteSidebar, SiteHeader}})
+  @Component({components: {SiteSidebar, SiteHeader, SiteFooter}})
   export default class App extends VueBase {
     public ready = false;
 
-    private async mounted() {
+    public async mounted() {
       const vm = this;
       // 如果有登录凭据参数，执行登录
       const key = 'ticket';

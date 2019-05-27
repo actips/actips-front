@@ -28,11 +28,12 @@
   export default class Home extends VueBase {
     public item: ProblemPost | null = null;
 
-    private async mounted() {
+    public async mounted() {
       const vm = this;
       const id = Number(vm.$route.params['id'] || 0);
       const resp = await vm.api('problem_post').get({id});
       vm.item = new ProblemPost(resp.data);
+      vm.htmlTitle = vm.item.title;
     }
   }
 </script>

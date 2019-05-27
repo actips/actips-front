@@ -12,6 +12,19 @@
   </div>
 </template>
 
+<script lang="ts">
+  import {Component, Vue} from 'vue-property-decorator';
+  import VueBase from '@/classes/vue/VueBase';
+
+  @Component
+  export default class About extends VueBase {
+    public async mounted() {
+      const vm = this;
+      vm.htmlTitle = '问答版块';
+    }
+  }
+</script>
+
 <style lang="less" scoped>
   h1 {
     font-size: 24px;
