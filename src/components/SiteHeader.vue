@@ -110,7 +110,7 @@
           display: inline-block;
           margin: 0 20px;
           .router-link-active {
-            color: blue;
+            color: #2d8cf0;
           }
         }
       }

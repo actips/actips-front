@@ -30,7 +30,7 @@
 
     public async mounted() {
       const vm = this;
-      const id = Number(vm.$route.params['id'] || 0);
+      const id = Number(vm.$route.params.id || 0);
       const resp = await vm.api('problem_post').get({id});
       vm.item = new ProblemPost(resp.data);
       vm.htmlTitle = vm.item.title;

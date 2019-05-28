@@ -24,6 +24,7 @@ export default new Router({
     // component: () => import('@/views/Home.vue'),
     {path: '/home', name: 'home', component: () => import('@/views/Home.vue')},
     {path: '/sites', name: 'sites', component: () => import('@/views/OJSiteList.vue')},
+    {path: '/site/:id', name: 'site_detail', component: () => import('@/views/OJSiteDetail.vue')},
     {path: '/about', name: 'about', component: () => import('@/views/About.vue')},
     {path: '/question', name: 'question', component: () => import('@/views/Question.vue')},
     {path: '/submit', name: 'submit', component: () => import('@/views/Submit.vue')},

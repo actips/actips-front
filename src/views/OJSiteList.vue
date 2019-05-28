@@ -4,7 +4,7 @@
       <h3 class="title">Online Judge 支持列表</h3>
     </div>
     <div class="page-body">
-      <i-table :columns="columns" :data="items"></i-table>
+      <i-table :columns="columns" :data="items" size="small"></i-table>
       <div class="row-pager">
         <page :page-size="page_size" :total="data_count" @on-change="loadItems"></page>
       </div>
@@ -27,48 +27,47 @@
     public columns = [
       {title: 'ID', key: 'id', width: 50},
       {title: '简码', key: 'code', width: 120},
-      {title: '名称', key: 'name'},
+      {
+        title: '名称',
+        render(h, {row, index, column}) {
+          return h('router-link', {
+            props: {
+              to: {name: 'site_detail', params: {id: row.id}},
+            },
+          }, row.name);
+        },
+      },
       {
         title: '支持',
         align: 'center',
         width: 60,
         render(h, {row, index, column}) {
-          return h('i', {class: {'fa': true, 'fa-check': row.is_supported}});
+          return h('i', {
+            style: {fontSize: '16px', color: row.is_supported ? '#19be6b' : '#ed4014'},
+            class: {'fa': true, 'fa-check': row.is_supported, 'fa-times': !row.is_supported},
+          });
         },
       },
       {
         title: '题库',
         align: 'center',
+        width: 80,
+        render(h, {row, index, column}) {
+          // const yes = row.supported_features.indexOf('parse_problem') > -1;
+          return h('router-link', {
+            props: {to: {name: 'problem_list', query: {site: row.id}}},
+          }, row.problem_count);
+        },
+      },
+      {
+        title: '授权',
+        align: 'center',
         width: 60,
         render(h, {row, index, column}) {
-          const yes = row.supported_features.indexOf('parse_problem') > -1;
-          return h('a', {
-            props: {href: 'javascript:'},
-            class: {'fa': true, 'fa-check': yes},
-            on: {
-              click() {
-                (window as any).app.$router.push({name: 'problem_list'});
-              },
-            },
+          return h('i', {
+            style: {fontSize: '16px', color: row.is_granted ? '#19be6b' : '#ed4014'},
+            class: {'fa': true, 'fa-check': row.is_granted, 'fa-times': !row.is_granted},
           });
-        },
-      },
-      {
-        title: '交题',
-        align: 'center',
-        width: 60,
-        render(h, {row, index, column}) {
-          const yes = row.supported_features.indexOf('submit_problem') > -1;
-          return h('i', {class: {'fa': true, 'fa-check': yes}});
-        },
-      },
-      {
-        title: '登录',
-        align: 'center',
-        width: 60,
-        render(h, {row, index, column}) {
-          const yes = row.supported_features.indexOf('check_context_validity') > -1;
-          return h('i', {class: {'fa': true, 'fa-check': yes}});
         },
       },
     ];
@@ -98,15 +97,6 @@
 
 <style lang="less" scoped>
   @import '../libs/less-template/template-defines';
-
-  .page-header {
-    h3.title {
-      font-size: 18px;
-      line-height: 36px;
-      /*border-bottom: 1px solid #F5F5F5;*/
-      margin-bottom: 10px;
-    }
-  }
 
   .page-body {
     .row-pager {

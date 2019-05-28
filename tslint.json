@@ -17,6 +17,6 @@
     "object-literal-sort-keys": false,
     "no-consecutive-blank-lines": false,
     "variable-name": false,
-    "no-string-literal": false
+    "curly": [true, "ignore-same-line"]
   }
 }

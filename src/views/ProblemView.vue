@@ -60,7 +60,7 @@
 
     public async mounted() {
       const vm = this;
-      const id = Number(vm.$route.params['id'] || 0);
+      const id = Number(vm.$route.params.id || 0);
       const resp = await vm.api('online_judge_problem').get({id});
       vm.item = new OnlineJudgeProblem(resp.data);
       vm.htmlTitle = `${vm.item.site_code}${vm.item.num} - ${vm.item.title}`;
@@ -75,8 +75,8 @@
       border-bottom: 1px solid #F5F5F5;
       h2 {
         font-size: 18px;
+        line-height: 52px;
         text-align: center;
-        margin: 15px;
       }
     }
     .section-info {

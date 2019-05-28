@@ -432,7 +432,7 @@
       // 读取OJ列表
       await this.loadListOJSites();
       // 加载 post 对象
-      const id = Number(vm.$route.params['id'] || 0);
+      const id = Number(vm.$route.params.id || 0);
       if (id) {
         const resp = await vm.api('problem_post').get({id});
         vm.item = resp.data;

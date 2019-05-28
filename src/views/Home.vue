@@ -91,13 +91,13 @@
       const vm = this;
       const query: any = {};
       if (vm.filterKeyword) {
-        query['search'] = vm.filterKeyword;
+        query.search = vm.filterKeyword;
       }
       if (vm.filterCategoryId) {
-        query['categories__id'] = vm.filterCategoryId;
+        query.categories__id = vm.filterCategoryId;
       }
       if (vm.filterSiteId) {
-        query['problem__site__id'] = vm.filterSiteId;
+        query.problem__site__id = vm.filterSiteId;
       }
       return query;
     }
