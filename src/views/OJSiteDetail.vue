@@ -24,7 +24,7 @@
             <template v-if="profile">
               <poptip confirm title="确认取消你对这个OJ平台的授权？"
                       @on-ok="cancelGrant()">
-                <i-button size="small">取消授权</i-button>
+                <i-button size="small" ghost type="error">取消授权</i-button>
               </poptip>
             </template>
             <template v-else>
@@ -37,24 +37,17 @@
           <!--</form-item>-->
         </i-form>
       </section>
-      <!--<section class="section section-user-profile">-->
-      <!--<h4 class="section-title">行为统计</h4>-->
-      <!--<i-form>-->
-      <!--<form-item label="用户名">-->
-      <!--<i-input></i-input>-->
-      <!--</form-item>-->
-      <!--<form-item label="密码">-->
-      <!--<i-input></i-input>-->
-      <!--</form-item>-->
-      <!--<form-item label="SESSION授权">-->
-      <!--已经授权-->
-      <!--</form-item>-->
-      <!--<form-item label="已经通过的题目清单">-->
-      <!--123-->
-      <!--</form-item>-->
-      <!--</i-form>-->
-      <!--</section>-->
+      <section class="section section-user-profile" v-if="submissions_count">
+        <h4 class="section-title">提交记录</h4>
+        <i-table :columns="submissions_column" :data="submissions_data"
+                 size="small"></i-table>
+        <div class="row-pager">
+          <page :page-size="10" :total="submissions_count"
+                @on-change="loadSubmissions"></page>
+        </div>
+      </section>
     </div>
+
 
     <!--TODO: 暂时图快，后期的话一旦出现需要复用就重构成模块-->
     <modal
@@ -142,6 +135,29 @@
     ];
     public feature_data: any[] = [];
 
+    public submissions_column = [
+      {title: 'ID', key: 'submission_id', width: 100},
+      {
+        title: '题目',
+        align: 'center',
+        width: 80,
+        render(h, {row}) {
+          return h('router-link', {
+            props: {
+              to: {name: 'problem_view', params: {id: row.problem}},
+            },
+          }, row.problem_num);
+        },
+      },
+      {title: '语言', key: 'language', width: 80, align: 'center'},
+      {title: '结果', key: 'result'},
+      {title: '耗时(ms)', key: 'run_time', width: 100, align: 'center'},
+      {title: '内存(KB)', key: 'run_memory', width: 100, align: 'center'},
+      {title: '提交时间', key: 'submit_time', width: 160},
+    ];
+    public submissions_data: any[] = [];
+    public submissions_count = 0;
+
     public showModalGrantPassword = false;
     public loadingGrantPassword = true;
     public formGrantPassword = {
@@ -193,9 +209,25 @@
       vm.showModalGrantSession = true;
     }
 
+    public async loadSubmissions(page = 1) {
+      const vm = this;
+      const me = await vm.getCurrentUser();
+      // 获取提交记录
+      const resp = await vm.api('online_judge_submission').get({}, {
+        user: me!.user,
+        page,
+        page_size: 10,
+      });
+      vm.submissions_data = resp.data.results;
+      vm.submissions_count = resp.data.count;
+    }
+
     public async mounted() {
       const vm = this;
       const resp = await vm.api('online_judge_site').get({id: vm.$route.params.id});
+      const resp2: any = await vm.api('online_judge_site').get({
+        id: vm.$route.params.id, action: 'get_profile',
+      }, {validate: 1}).catch(() => 0);
       vm.item = resp.data;
       vm.feature_data = Object.keys(vm.feature_map).map((key) => ({
           key,
@@ -203,12 +235,9 @@
           supported: vm.item!.supported_features.indexOf(key) > -1,
         }
       ));
-      const resp2: any = await vm.api('online_judge_site').get({
-        id: vm.$route.params.id, action: 'get_profile',
-      }, {validate: 1}).catch(() => 0);
-      if (resp2) {
-        vm.profile = resp2.data;
-      }
+      if (resp2) vm.profile = resp2.data;
+      // 读取提交记录
+      await vm.loadSubmissions();
     }
   }
 </script>
@@ -222,6 +251,10 @@
     h4.section-title {
       font-size: 16px;
       margin-bottom: 15px;
+    }
+    .row-pager {
+      margin: 10px 0;
+      text-align: right;
     }
   }
 

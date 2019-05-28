@@ -6,7 +6,8 @@
     <div class="page-body">
       <i-table :columns="columns" :data="items" size="small"></i-table>
       <div class="row-pager">
-        <page :page-size="page_size" :total="data_count" @on-change="loadItems"></page>
+        <page :page-size="page_size" :total="data_count"
+              @on-change="loadItems"></page>
       </div>
     </div>
   </div>
@@ -57,6 +58,17 @@
           return h('router-link', {
             props: {to: {name: 'problem_list', query: {site: row.id}}},
           }, row.problem_count);
+        },
+      },
+      {
+        title: '题解',
+        align: 'center',
+        width: 80,
+        render(h, {row, index, column}) {
+          // const yes = row.supported_features.indexOf('parse_problem') > -1;
+          return h('router-link', {
+            props: {to: {name: 'home', query: {problems__site__id: row.id}}},
+          }, row.post_count);
         },
       },
       {
