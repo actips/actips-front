@@ -221,11 +221,11 @@
       });
       // 清理
       vm.code = '';
-      vm.$Message.success('提交成功，2秒后刷新提交列表。');
+      vm.$Message.success('提交成功，5秒后刷新提交列表。');
       // 稍后刷新提交列表
       setTimeout(async () => {
         await vm.loadSubmissions(1);
-      }, 2000);
+      }, 5000);
     }
 
     public async mounted() {
@@ -279,6 +279,7 @@
         border: 1px solid #F5F5F5;
         border-top: 0;
         margin-bottom: 15px;
+        font-family: inconsolata, monospace;
       }
       /deep/ p:not(:last-child) {
         text-align: justify;
@@ -297,10 +298,13 @@
       pre.data {
         padding: 15px;
         background: #F5F5F5;
-        margin-bottom: 15px
+        margin-bottom: 15px;
+        font-family: inconsolata, monospace;
+        overflow-x: auto;
       }
       .extra-info {
-        margin-top: 15px;
+        margin: 15px 0;
+        font-family: inconsolata, monospace;
         padding: 15px 0;
         p {
           line-height: 1.5px;
@@ -310,7 +314,7 @@
         .editor-frame {
           border-right: 1px solid #F5F5F5;
           border-bottom: 1px solid #F5F5F5;
-          height: 600px;
+          height: 500px;
         }
         .actions {
           margin: 8px -10px;

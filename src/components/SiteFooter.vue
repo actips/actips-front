@@ -25,7 +25,8 @@
 
   .site-footer {
     background: #F5F5F5;
-    font-family: monospace;
+    font-family: "Courier New", Courier, monospace;
+
     /*padding-bottom: 15px;*/
     .wrapper {
       width: 1160px;
