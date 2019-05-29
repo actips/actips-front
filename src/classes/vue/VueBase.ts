@@ -4,6 +4,7 @@ import GlobalContext from '@/classes/utils/GlobalContext';
 import ApiResource from '@/classes/utils/ApiResource';
 import Member from '@/classes/models/Member';
 import VueRoot from '@/classes/vue/VueRoot';
+import moment from 'moment';
 
 export default class VueBase extends Vue {
 
@@ -115,7 +116,8 @@ export default class VueBase extends Vue {
     } else if (days <= 3) {
       return days + '天前';
     } else {
-      return '很久以前';
+      return moment(date).format('YYYY-MM-DD HH:mm:ss');
+      // return '很久以前';
     }
   }
 

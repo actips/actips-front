@@ -7,6 +7,7 @@ export default class Member {
   public mobile = '';
   public email = '';
   public birthday = '';
+  public granted_oj_sites: number[] = [];
 
   constructor(data: { [key: string]: any } = {}) {
     Object.assign(this, data);

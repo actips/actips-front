@@ -17,7 +17,7 @@
       </div>
       <div class="logo">
         <img src="../assets/images/ACTips-40.png"/>
-        <pre>v0.1.7</pre>
+        <pre>v0.2.0</pre>
       </div>
       <div class="nav">
         <ul class="menu">

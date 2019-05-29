@@ -4,7 +4,8 @@
       <h3 class="title">题库</h3>
     </div>
     <div class="page-body">
-      <i-table :columns="columns" :data="items" size="small"></i-table>
+      <i-table :columns="columns" :data="items" size="small"
+               :row-class-name="tableProblemsClassName"></i-table>
       <div class="row-pager">
         <page :page-size="page_size" :total="data_count" @on-change="loadItems"></page>
       </div>
@@ -39,11 +40,22 @@
         },
       },
       {
-        title: '可用',
-        align: 'center',
-        width: 60,
+        title: '结果',
+        align: 'left',
+        width: 120,
         render(h, {row, index, column}) {
-          return h('i', {class: {'fa': true, 'fa-check': row.is_synced}});
+          return h('i', {
+            style: {
+              // fontSize: '16px',
+              color: row.submission_count_self_accepted > 0 ? '#19be6b' :
+                row.submission_count_self > 0 ? '#ff9900' : '',
+            },
+            class: {
+              'fa': true,
+              'fa-check': row.submission_count_self_accepted > 0,
+              'fa-exclamation': !row.submission_count_self_accepted && row.submission_count_self > 0,
+            },
+          }, row.submission_count_self ? ` (${row.submission_count_self})` : '');
         },
       },
       // {
@@ -86,6 +98,12 @@
       vm.items.splice(0, vm.items.length, ...resp.data.results.map((item: any) => new OnlineJudgeProblem(item)));
     }
 
+    public tableProblemsClassName(row) {
+      const vm = this;
+      return row.submission_count_self_accepted > 0 ? 'problem-row-passed' :
+        row.submission_count_self > 0 ? 'problem-row-attempted' : '';
+    }
+
     public async mounted() {
       const vm = this;
       vm.htmlTitle = '题库';
@@ -111,5 +129,17 @@
       text-align: right;
       margin: 10px 0;
     }
+  }
+
+  /deep/ .ivu-table td {
+    background: transparent;
+  }
+
+  /deep/ .problem-row-passed {
+    background: fade(#19be6b, 7%);
+  }
+
+  /deep/ .problem-row-attempted {
+    background: fade(#ff9900, 7%);
   }
 </style>

@@ -18,6 +18,10 @@ export default class OnlineJudgeProblem {
   public input_samples = [];
   public output_samples = [];
   public extra_info = {};
+  public supported_languages = [];
+  public submission_count = 0;
+  public submission_count_self = 0;
+  public submission_count_self_accepted = 0;
 
   constructor(data: { [key: string]: any } = {}) {
     data.input_samples = data.input_samples && data.input_samples.split('<!--DATA-SEPARATOR-->') || [];
