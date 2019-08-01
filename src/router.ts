@@ -34,6 +34,7 @@ export default new Router({
     {path: '/version', name: 'version', component: () => import('@/views/Version.vue')},
     {path: '/problems', name: 'problem_list', component: () => import('@/views/ProblemList.vue')},
     {path: '/problem/:id', name: 'problem_view', component: () => import('@/views/ProblemView.vue')},
+    {path: '/problem/:oj/:num', name: 'problem_view_num', component: () => import('@/views/ProblemView.vue')},
     {
       path: '/personal',
       name: 'personal',

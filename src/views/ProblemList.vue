@@ -34,7 +34,8 @@
         render(h, {row, index, column}) {
           return h('router-link', {
             props: {
-              to: {name: 'problem_view', params: {id: row.id}},
+              // to: {name: 'problem_view', params: {id: row.id}},
+              to: {name: 'problem_view_num', params: {oj: row.site_code, num: row.num}},
             },
           }, row.title);
         },
@@ -90,12 +91,12 @@
       const resp = await vm.api('online_judge_problem').get({}, {
         page_size: vm.page_size,
         page: vm.page,
-        ordering: 'site,num',
+        // ordering: 'site,contest_num,num',
         is_synced: 'True',
         ...query,
       });
       vm.data_count = resp.data.count;
-      vm.items.splice(0, vm.items.length, ...resp.data.results.map((item: any) => new OnlineJudgeProblem(item)));
+      vm.items = resp.data.results.map((item: any) => new OnlineJudgeProblem(item));
     }
 
     public tableProblemsClassName(row) {

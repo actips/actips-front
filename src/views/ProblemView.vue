@@ -14,6 +14,11 @@
       <div class="block-content">
         <vue-markdown>{{item.description}}</vue-markdown>
         <vue-markdown>{{item.extra_description}}</vue-markdown>
+        <object style="width: 100%; height: 800px"
+                v-if="item.site_code === 'CF' && /^See the problem description in the /.test(item.description)"
+                :data="/(\/media\/oj\/CF\/pdf\/[^)]+)/.exec(item.description)[1]+'#toolbar=1&amp;navpanes=0&amp;page=1&amp;view=FitH'"
+                type="application/pdf">
+        </object>
       </div>
       <template v-if="item.input_specification">
         <h4 class="block-title">输入说明</h4>
@@ -68,7 +73,7 @@
               <form-item>
                 <i-select v-model="language" size="small" @input="changeLanguage">
                   <i-option v-for="lang in item.supported_languages"
-                            :key="lang" :value="lang">{{lang}}
+                            :key="lang.id" :value="lang.id">{{lang.label}}
                   </i-option>
                 </i-select>
               </form-item>
@@ -231,8 +236,18 @@
     public async mounted() {
       const vm = this;
       const id = Number(vm.$route.params.id || 0);
-      const resp = await vm.api('online_judge_problem').get({id});
-      vm.item = new OnlineJudgeProblem(resp.data);
+      const oj = vm.$route.params.oj;
+      const num = vm.$route.params.num;
+      if (id) {
+        const resp = await vm.api('online_judge_problem').get({id});
+        vm.item = new OnlineJudgeProblem(resp.data);
+      } else {
+        const resp = await vm.api('online_judge_problem').get({}, {
+          site__code__iexact: oj,
+          num__iexact: num,
+        });
+        vm.item = new OnlineJudgeProblem(resp.data.results[0]);
+      }
       vm.htmlTitle = `${vm.item.site_code}${vm.item.num} - ${vm.item.title}`;
       // 获取上次的语言
       vm.language = localStorage.getItem('preferred_language_' + vm.item.site) || '';
